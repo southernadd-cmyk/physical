@@ -56,14 +56,30 @@ const ZONES = [
   ['plant', 'Plant and services', 510, 305, 175, 135, 'Cooling plant, power and environmental risks.', 'BUILDING SERVICES']
 ];
 
+/* Procedures cost money and depend on equipment. `needs` is an any-of list of
+   control ids: declare a procedure with nothing to support it and it does not count. */
 const PROCEDURES = [
-  ['visitor', 'Visitor sign-in and escorting', 'Visitors are signed in, badged and escorted; staff challenge anyone without a badge.', ['A1.1.3', 'C1']],
-  ['response', 'Alarm and CCTV response', 'A named person investigates alerts and knows who to call out of hours.', ['C1']],
-  ['fireplan', 'Fire response and evacuation', 'Staff raise the alarm and evacuate; equipment is used only if trained and safe.', ['A1.1.2']],
-  ['coolplan', 'Temperature monitoring and changeover', 'Temperature is monitored and staff switch to standby cooling on alert.', ['A1.1.2']],
-  ['keys', 'Key and access-card control', 'Keys and cards are issued, logged and returned; leavers are revoked the same day.', ['A1.1.3', 'C1']],
-  ['backups', 'Backup rotation and offsite storage', 'Backups are taken, moved offsite and restore-tested, not just written.', ['A4', 'C1']],
-  ['disposal', 'Secure disposal', 'Old drives and paper are shredded or destroyed to a certificate, not binned.', ['A1.1.4', 'C1']]
+  { id: 'visitor', name: 'Visitor sign-in and escorting', cost: 420, spec: ['A1.1.3', 'C1'],
+    desc: 'Visitors are signed in, badged and escorted; staff challenge anyone without a badge.',
+    needs: ['badges'], needsText: 'Nobody can be challenged for not showing a badge if you have not issued any.' },
+  { id: 'response', name: 'Alarm and CCTV response', cost: 540, spec: ['C1'],
+    desc: 'A named person investigates alerts and knows who to call out of hours.',
+    needs: ['cctv', 'motion'], needsText: 'There is nothing to respond to until you deploy CCTV or intruder detection.' },
+  { id: 'fireplan', name: 'Fire response and evacuation', cost: 260, spec: ['A1.1.2'],
+    desc: 'Staff raise the alarm and evacuate; equipment is used only if trained and safe.',
+    needs: ['fire', 'gas'], needsText: 'A response plan needs suppression equipment for trained staff to use.' },
+  { id: 'coolplan', name: 'Temperature monitoring and changeover', cost: 180, spec: ['A1.1.2'],
+    desc: 'Temperature is monitored and staff switch to standby cooling on alert.',
+    needs: ['cooling', 'backupcool'], needsText: 'There is nothing to monitor or change over to until cooling is installed.' },
+  { id: 'keys', name: 'Key and access-card control', cost: 220, spec: ['A1.1.3', 'C1'],
+    desc: 'Keys and cards are issued, logged and returned; leavers are revoked the same day.',
+    needs: ['access', 'locks', 'biometric'], needsText: 'There are no keys or cards to control until you fit locks or an entry system.' },
+  { id: 'backups', name: 'Backup rotation and offsite storage', cost: 780, spec: ['A4', 'C1'],
+    desc: 'Backups are taken, moved offsite and restore-tested, not just written.',
+    needs: [], needsText: '' },
+  { id: 'disposal', name: 'Secure disposal', cost: 340, spec: ['A1.1.4', 'C1'],
+    desc: 'Old drives and paper are shredded or destroyed to a certificate, not binned.',
+    needs: [], needsText: '' }
 ];
 
 /* checks are built at evaluation time; here: id, title, brief, zone, spec */
@@ -91,7 +107,7 @@ const QUESTIONS = [
   { id: 'q5', cmd: 'Explain', marks: 6, spec: 'A1.1.3', prompt: 'Explain why physical security measures depend on staff procedures. Use two procedures from your design as examples.', indicative: ['Equipment only works if people use it as intended, so human behaviour is part of the control, not separate from it.', 'Badges do not stop tailgating unless staff challenge people without one.', 'An alarm does nothing unless a named responder investigates it.', 'Access cards stay a risk until a leaver process revokes them.', 'Six marks needs two developed examples, each with the measure, the procedure and the consequence of the procedure failing.'] },
   { id: 'q6', cmd: 'Explain', marks: 4, spec: 'A1.1.2', prompt: 'Explain the difference between a compensating control and a second preventative control, using the cooling in your design as an example.', indicative: ['A compensating control substitutes for a primary control that is unavailable or inadequate; it addresses the same risk by another route.', 'A second preventative control adds another layer while the first is still working.', 'Standby cooling only compensates when primary cooling has failed; running both continuously would be redundancy, not compensation.'] },
   { id: 'q7', cmd: 'Evaluate', marks: 8, spec: 'A4', prompt: 'Evaluate your finished design against the budget. Explain what you prioritised, what you left out, and what risk remains.', indicative: ['A judgement is needed, not a list: which zones got the money and why those were the highest risk.', 'Reference the value of the assets in each zone, not just the cost of the kit.', 'Name at least one control that was cut and what that exposes.', 'Name a residual risk that money would not fix, e.g. staff behaviour, a shared door, an installation limit.', 'Top band: a supported judgement with trade-offs on both sides and a clear recommendation.'] },
-  { id: 'q8', cmd: 'Evaluate', marks: 6, spec: 'C1', prompt: 'Evaluate whether an organisation gets better value from spending £2,000 on physical security equipment or on staff training and procedures.', indicative: ['Both sides needed. Equipment works without cooperation and produces evidence, but is fixed, costly and can be bypassed.', 'Training addresses social engineering and tailgating, which no lock prevents, but it decays and depends on culture.', 'The strongest answers reject the either/or and justify a split with reference to the specific risks in the scenario.'] }
+  { id: 'q8', cmd: 'Evaluate', marks: 6, spec: 'C1', prompt: 'Evaluate whether an organisation gets better value from spending £2,000 on physical security equipment or on staff training and procedures.', indicative: ['Both sides needed. Equipment works without cooperation and produces evidence, but is fixed, costly and can be bypassed.', 'Training addresses social engineering and tailgating, which no lock prevents, but it decays and depends on culture.', 'The strongest answers reject the either/or and justify a split with reference to the specific risks in the scenario.', 'The student has made this exact trade-off in their own design — credit any reference to what they spent on equipment against what they spent on procedures.'] }
 ];
 
 /* ---------------------------------------------------------------- state */
@@ -108,6 +124,7 @@ const fresh = () => ({
   compare: {},                // typeId -> written supplier comparison
   placements: [],
   procedures: {},
+  procedureNotes: {},   // who owns each declared procedure
   runs: [],
   answers: {},                // questionId -> { text, mark }
   reflection: ''
@@ -126,10 +143,11 @@ let lastRank = '';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const money = n => new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 2 }).format(n || 0);
+const money0 = n => new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(n || 0);
 const type = id => TYPES.find(t => t.id === id);
 const zname = id => ZONES.find(z => z[0] === id)?.[1] || id;
 const zinfo = id => ZONES.find(z => z[0] === id);
-const proc = id => PROCEDURES.find(p => p[0] === id);
+const proc = id => PROCEDURES.find(p => p.id === id);
 const weburl = s => { try { return ['http:', 'https:'].includes(new URL(s).protocol); } catch { return false; } };
 const imgurl = s => weburl(s) || /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(s);
 const specTag = codes => codes.map(c => `<span class="spec" title="${esc(SPEC[c] || c)}">${esc(c)}</span>`).join('');
@@ -156,9 +174,22 @@ function requiredTypes() {
 const has = (t, z) => state.placements.some(p => p.type === t && p.zone === z);
 const hasAny = (t) => state.placements.some(p => p.type === t);
 
-function spent() {
+function equipSpent() {
   return state.placements.reduce((a, p) => a + (state.products[p.type]?.[p.slot]?.price || 0), 0);
 }
+function procSpent() {
+  return PROCEDURES.reduce((a, p) => a + (state.procedures[p.id] ? p.cost : 0), 0);
+}
+function spent() { return equipSpent() + procSpent(); }
+
+/* A procedure only counts if something in the design supports it. */
+function supported(id) {
+  const p = proc(id);
+  return !p.needs.length || p.needs.some(hasAny);
+}
+function declared(id) { return !!state.procedures[id] && supported(id); }
+function ownerNote(id) { return (state.procedureNotes[id] || '').trim(); }
+function procComplete(id) { return declared(id) && ownerNote(id).length >= 25; }
 function signature() {
   const text = JSON.stringify([state.placements, state.products, state.procedures, state.budget]);
   let h = 2166136261;
@@ -182,16 +213,19 @@ function counts() {
     required: req.length,
     wins: latestRuns().filter(r => r.score === 100).length,
     answered: QUESTIONS.filter(q => (state.answers[q.id]?.text || '').trim().length >= 30).length,
+    procsOn: PROCEDURES.filter(p => state.procedures[p.id]).length,
+    procsDone: PROCEDURES.filter(p => procComplete(p.id)).length,
+    procsUnsupported: PROCEDURES.filter(p => state.procedures[p.id] && !supported(p.id)).length,
     purposes: GROUPS.map((g, i) => state.placements.some(p => type(p.type)?.group === i))
   };
 }
 function maxXp() {
   const req = Math.max(1, requiredTypes().length);
-  return req * 30 + req * 25 + Math.min(req, 18) * 15 + SCENARIOS.length * 40 + QUESTIONS.length * 10;
+  return req * 30 + req * 25 + Math.min(req, 18) * 15 + SCENARIOS.length * 40 + QUESTIONS.length * 10 + PROCEDURES.length * 10;
 }
 function xpNow() {
   const c = counts();
-  return c.products * 15 + c.compares * 25 + Math.min(state.placements.length, 18) * 15 + c.wins * 40 + c.answered * 10;
+  return c.products * 15 + c.compares * 25 + Math.min(state.placements.length, 18) * 15 + c.wins * 40 + c.answered * 10 + c.procsDone * 10;
 }
 function clearance() {
   const c = counts();
@@ -199,6 +233,7 @@ function clearance() {
     && c.compares === c.required
     && c.purposes.every(Boolean)
     && c.wins === SCENARIOS.length
+    && c.procsOn === c.procsDone
     && spent() <= state.budget
     && state.reflection.trim().length >= 120
     && c.answered === QUESTIONS.length;
@@ -251,7 +286,10 @@ function validateState(raw) {
     && typeof p.reason === 'string' && p.reason.trim()
     && typeof p.id === 'string' && /^[a-zA-Z0-9-]+$/.test(p.id)
   ).slice(0, 150);
-  for (const p of PROCEDURES) n.procedures[p[0]] = s.procedures[p[0]] === true;
+  for (const p of PROCEDURES) {
+    n.procedures[p.id] = s.procedures[p.id] === true;
+    n.procedureNotes[p.id] = String(s.procedureNotes?.[p.id] || '').slice(0, 2000);
+  }
   n.runs = (s.runs || []).filter(r =>
     r && SCENARIOS.some(x => x[0] === r.id) && Array.isArray(r.checks)
     && r.checks.every(c => typeof c.ok === 'boolean' && typeof c.text === 'string')
@@ -394,6 +432,8 @@ function nextGoal() {
   if (!state.placements.length) return 'research a product and deploy it to a zone.';
   if (c.compares < c.required) return `write the supplier comparison for ${c.required - c.compares} more technique(s).`;
   if (!c.purposes.every(Boolean)) return `deploy a ${GROUPS[c.purposes.findIndex(p => !p)][0].toLowerCase()} control.`;
+  if (c.procsUnsupported) return `${c.procsUnsupported} procedure(s) have no equipment behind them.`;
+  if (c.procsOn > c.procsDone) return `say who owns ${c.procsOn - c.procsDone} of your procedures.`;
   if (c.wins < SCENARIOS.length) return `close the gaps in ${SCENARIOS.length - c.wins} more incident(s).`;
   if (spent() > state.budget) return 'bring the design back within budget.';
   if (c.answered < QUESTIONS.length) return `answer ${QUESTIONS.length - c.answered} more exam question(s).`;
@@ -518,9 +558,20 @@ function planView() {
           <div class="purposes"><small>Control purposes covered</small><div>${purposeStrip}</div></div>
         </div>
         <h3 class="blockhead">Operational procedures <span class="spec" title="${esc(SPEC['C1'])}">C1</span></h3>
-        <p class="tiny">Equipment on its own is not a control. Tick the procedures your organisation would actually run, and be ready to explain how staff would do it.</p>
-        <div class="procedures">${PROCEDURES.map(p =>
-          `<label class="procedure"><input type="checkbox" ${state.procedures[p[0]] ? 'checked' : ''} onchange="setProcedure('${p[0]}', this.checked)"><span><b>${p[1]}</b><small>${p[2]}</small></span></label>`).join('')}</div>
+        <p class="tiny">Equipment on its own is not a control. Procedures cost money and staff time, and a procedure with nothing behind it does not count — so choose, do not tick everything. Running all seven costs ${money0(PROCEDURES.reduce((a, p) => a + p.cost, 0))} of your budget; you are spending ${money(procSpent())} on the ${c.procsOn} you have declared.</p>
+        <div class="procedures">${PROCEDURES.map(p => {
+          const on = !!state.procedures[p.id], gap = on && !supported(p.id), note = ownerNote(p.id);
+          return `<div class="proc-card ${on ? 'on' : ''} ${gap ? 'unsupported' : ''}">
+            <label class="procedure">
+              <input type="checkbox" ${on ? 'checked' : ''} onchange="setProcedure('${p.id}', this.checked)">
+              <span><b>${p.name}</b> <span class="cost">${money0(p.cost)}/yr</span><small>${p.desc}</small></span>
+            </label>
+            ${gap ? `<p class="gap-line">Nothing supports this yet. ${p.needsText} It will not count in an incident until it does.</p>` : ''}
+            ${on ? `<label class="sr-only" for="own-${p.id}">Who owns ${p.name}?</label>
+              <textarea id="own-${p.id}" class="owner" placeholder="Who owns this, and how would you know it is actually happening?" onchange="saveProcedureNote('${p.id}', this.value)">${esc(note)}</textarea>
+              <span class="tiny">${note.length >= 25 ? '\u2713 Owner recorded' : 'Name the person or role, and the evidence that it happens'}</span>` : ''}
+          </div>`;
+        }).join('')}</div>
       </div>
 
       <section class="sidepanel">
@@ -554,15 +605,51 @@ function planView() {
 }
 
 function setProcedure(id, on) {
-  state.procedures[id] = on;
-  persist();
   const p = proc(id);
-  toast(on ? `Procedure added: ${p[1]}` : `Procedure removed: ${p[1]}`, {
-    type: on ? 'ok' : 'warn',
-    detail: on ? p[2] : 'Any incident that relied on this procedure will now show a gap.',
+  if (on && spent() + p.cost > state.budget) {
+    toast('That procedure would take you over budget', {
+      type: 'error',
+      detail: `${p.name} costs ${money0(p.cost)} a year and you have ${money(state.budget - spent())} left. Procedures compete with equipment for the same money — that is the trade-off.`
+    });
+    render();
+    return;
+  }
+  state.procedures[id] = on;
+  if (!on) state.procedureNotes[id] = '';
+  persist();
+  render();
+
+  if (!on) {
+    toast(`Procedure removed: ${p.name}`, { type: 'warn', detail: `${money0(p.cost)} back in the budget. Any incident that relied on it will now show a gap.`, key: 'proc-' + id });
+    return;
+  }
+  if (!supported(id)) {
+    toast(`${p.name} has nothing behind it`, {
+      type: 'warn',
+      detail: `${p.needsText} You are paying ${money0(p.cost)} for a procedure that will not count until the equipment is there.`,
+      duration: 9000,
+      key: 'proc-' + id,
+      action: { label: 'Research what it needs', run: () => setTab('research') }
+    });
+    return;
+  }
+  toast(`Procedure added: ${p.name}`, {
+    type: 'ok',
+    detail: `${money0(p.cost)} a year, ${money(state.budget - spent())} left. Now say who owns it.`,
     key: 'proc-' + id
   });
-  if (tab === 'plan' && staleRuns()) render();
+}
+
+function saveProcedureNote(id, value) {
+  state.procedureNotes[id] = value;
+  persist();
+  const p = proc(id);
+  if (value.trim().length >= 25) {
+    toast(`Owner recorded: ${p.name}`, { type: 'ok', detail: 'A policy nobody owns is a policy nobody follows — that is the C1 point.', key: 'own-' + id });
+  } else if (value.trim().length) {
+    toast('Owner statement too short', { type: 'warn', detail: 'Name the person or role and say how you would know it is happening.', key: 'own-' + id });
+  }
+  render();
 }
 
 function deploy(e) {
@@ -837,7 +924,8 @@ async function runIncident(id) {
 }
 
 function evaluate(id) {
-  const p = state.procedures;
+  /* a procedure only counts when the design actually supports it */
+  const p = Object.fromEntries(PROCEDURES.map(x => [x.id, declared(x.id)]));
   const c = (ok, text, why) => ({ ok: !!ok, text, why });
   let checks;
   switch (id) {
@@ -975,7 +1063,7 @@ function revealMarks(id, force) {
 function coverage() {
   const hit = new Set();
   state.placements.forEach(p => type(p.type).spec.forEach(s => hit.add(s)));
-  PROCEDURES.forEach(p => { if (state.procedures[p[0]]) p[3].forEach(s => hit.add(s)); });
+  PROCEDURES.forEach(p => { if (declared(p.id)) p.spec.forEach(code => hit.add(code)); });
   QUESTIONS.forEach(q => { if ((state.answers[q.id]?.text || '').trim().length >= 30) hit.add(q.spec); });
   return Object.keys(SPEC).map(code => [code, SPEC[code], hit.has(code)]);
 }
@@ -991,7 +1079,7 @@ function reportView() {
     `<div class="reportgrid">
       <div class="card"><strong>${c.compares}/${c.required || 0}</strong><small>Supplier comparisons written</small></div>
       <div class="card"><strong>${c.wins}/${SCENARIOS.length}</strong><small>Incidents fully addressed</small></div>
-      <div class="card"><strong>${money(spent())}</strong><small>Spent of ${money(state.budget)}</small></div>
+      <div class="card"><strong>${money(spent())}</strong><small>Of ${money(state.budget)} — ${money(equipSpent())} equipment, ${money(procSpent())} procedures</small></div>
       <div class="card"><strong>${awarded}/${totalMarks}</strong><small>Self-assessed exam marks</small></div>
     </div>
 
@@ -1003,7 +1091,8 @@ function reportView() {
         <li>${c.required && c.compares === c.required ? '✓' : '○'} Two suppliers compared, with a written choice, for every technique you use (${c.compares}/${c.required || 0}).</li>
         <li>${c.purposes.every(Boolean) ? '✓' : '○'} At least one control of each purpose deployed (${c.purposes.filter(Boolean).length}/5).</li>
         <li>${c.wins === SCENARIOS.length ? '✓' : '○'} All ${SCENARIOS.length} incidents fully addressed by the current design.</li>
-        <li>${spent() <= state.budget ? '✓' : '○'} Design within the ${money(state.budget)} budget.</li>
+        <li>${counts().procsOn && counts().procsOn === counts().procsDone ? '✓' : '○'} Every declared procedure is supported by equipment and has a named owner (${counts().procsDone}/${counts().procsOn || 0}).</li>
+        <li>${spent() <= state.budget ? '✓' : '○'} Equipment and procedures together within the ${money(state.budget)} budget.</li>
         <li>${c.answered === QUESTIONS.length ? '✓' : '○'} All ${QUESTIONS.length} exam-practice questions answered.</li>
         <li>${state.reflection.trim().length >= 120 ? '✓' : '○'} Final evaluation written.</li>
       </ul>
@@ -1026,7 +1115,7 @@ function reportView() {
         return `<p><b>${zname(p.zone)} — ${t.name} (${GROUPS[t.group][0]}):</b> ${esc(prod.name)}, ${esc(prod.supplier)}, ${money(prod.price)}. ${esc(p.reason)}</p>`;
       }).join('') || '<p>No controls deployed.</p>'}
       <h3 class="blockhead">Operational procedures</h3>
-      ${PROCEDURES.filter(p => state.procedures[p[0]]).map(p => `<p><b>${p[1]}:</b> ${p[2]}</p>`).join('') || '<p>No procedures selected. Every incident that depends on staff action will show a gap.</p>'}
+      ${PROCEDURES.filter(p => state.procedures[p.id]).map(p => `<p><b>${p.name} — ${money0(p.cost)}/yr${supported(p.id) ? '' : ' — NOT SUPPORTED BY THE DESIGN'}:</b> ${p.desc}<br>${ownerNote(p.id) ? 'Owner: ' + esc(ownerNote(p.id)) : '<i>No owner recorded.</i>'}</p>`).join('') || '<p>No procedures declared. Every incident that depends on staff action will show a gap.</p>'}
     </div>
 
     <div class="card" style="margin-top:20px">
@@ -1094,6 +1183,7 @@ function briefView() {
         </ol>
         <label>Mission budget (£)<input type="number" min="0" max="1000000" step="100" value="${state.budget}" onchange="setBudget(this.value)"></label>
         <p>£10,000 is a classroom constraint, not a recommended real-world figure. Raise it if you are pricing quoted systems rather than single units.</p>
+        <p>Procedures are charged against the same budget at an indicative annual cost — training, staff time, keyholding, offsite storage and destruction contracts are all real line items. All seven come to ${money0(PROCEDURES.reduce((a, p) => a + p.cost, 0))}. The figures are classroom estimates, not quotes.</p>
         <label for="rulepick">Research requirement</label>
         <select id="rulepick" onchange="setRule(this.value)">
           <option value="deployed" ${state.researchRule === 'deployed' ? 'selected' : ''}>Compare suppliers for the techniques you deploy</option>
@@ -1110,6 +1200,7 @@ function briefView() {
           <li>15 XP for each deployment.</li>
           <li>40 XP for each incident fully addressed by your current design.</li>
           <li>10 XP for each exam question answered.</li>
+          <li>10 XP for each procedure that is supported by the design and has a named owner.</li>
         </ul>
         <p>Changing the design makes old incident results historical — retest to earn the XP again. Repeating an identical run does not stack points.</p>
         <p>Your work is stored in this browser only. Save a file before you change computer or the lesson ends.</p>
@@ -1123,6 +1214,8 @@ function briefView() {
       <h2>The five control purposes</h2>
       ${GROUPS.map((g, i) => `<h3 class="blockhead">${g[0]}</h3><p>${g[1]} In this pack: ${TYPES.filter(t => t.group === i).map(t => t.name.toLowerCase()).join(', ')}.</p>`).join('')}
       <div class="notice" style="margin-top:20px">A control can serve more than one purpose depending on how it is used. Cooling normally prevents overheating; standby cooling is compensating only when it stands in for a primary control that has failed. A policy that ID must be displayed is directive; buying lanyards is not.</div>
+      <h3 class="blockhead">Why procedures are not free</h3>
+      <p>A policy costs money and depends on equipment. Declaring alarm response with no CCTV or sensors buys you a rota with nothing to respond to, so the simulation will not credit it. Every procedure you declare needs a named owner and a way of knowing it actually happens — that is the difference between a policy and a document.</p>
       <h3 class="blockhead">What the simulation does not check</h3>
       <p>It checks control types, zones and declared procedures. It does not check lock ratings, camera fields of view, flood heights, gas-system suitability, installation quality, price accuracy or whether staff would really follow the procedure. Keep escape routes usable in every design — physical security never overrides fire safety.</p>
       <h3 class="blockhead">Teacher controls</h3>

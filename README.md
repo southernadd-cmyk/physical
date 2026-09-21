@@ -33,6 +33,8 @@ and the Mission report shows a coverage list built from what the student actuall
    description, supplier link, price and price basis/date — then write which one they would buy and why.
 2. **Deploy** products onto the office floorplan with a written justification for the zone and the supplier.
 3. **Declare procedures** — visitor escorting, alarm response, key control, backups, disposal and so on.
+   Procedures are charged to the same budget at an indicative annual cost, must be supported by equipment
+   already in the design, and need a named owner.
 4. **Test** against twelve incidents and use the debriefs to revise the design.
 5. **Answer** eight exam-practice questions using the unit's command words, with indicative content to
    self-assess against.
@@ -57,6 +59,20 @@ Two modes, switchable in *Mission and lesson guide* or from the research lab:
 - **Directive** — security signage, ID badges.
 - **Compensating** — standby cooling, with an explanation of the primary control it replaces.
 
+## Procedures are not free
+
+Ticking all seven costs £2,740 of the £10,000 budget, so procedures compete with equipment for the same
+money — which is the trade-off exam question 8 asks students to evaluate.
+
+Each procedure also depends on equipment. Alarm response needs CCTV or intruder detection somewhere in the
+design; fire response needs suppression; key control needs locks or an entry system; temperature changeover
+needs cooling. A procedure with nothing behind it is charged for, flagged on the card and in the report, and
+does **not** count when an incident is evaluated. Backup rotation and secure disposal have no equipment
+dependency.
+
+Every declared procedure needs a written owner — who does it, and how you would know it is actually
+happening. That statement is required for clearance and appears on the printed report.
+
 ## Incidents
 
 Twelve deterministic scenarios: tailgating, after-hours vehicle, server-room intrusion, records store,
@@ -78,13 +94,14 @@ Self-awarded marks are for tracking only and appear on the printed report for th
 ## Scoring
 
 15 XP per complete product record; 25 per two-supplier comparison with a written choice; 15 per
-deployment; 40 per incident fully addressed by the current design; 10 per exam question answered.
+deployment; 40 per incident fully addressed by the current design; 10 per exam question answered;
+10 per supported procedure with a named owner.
 Repeated runs of an unchanged design do not stack XP. Research, deployments, procedures and budget
 changes invalidate old incident results.
 
 **Security architect** clearance requires a written supplier comparison for every technique used, at
-least one control of each of the five purposes, all twelve incidents fully addressed, a design within
-budget, all eight questions answered, and a written evaluation.
+least one control of each of the five purposes, all twelve incidents fully addressed, every declared
+procedure supported and owned, equipment and procedures together within budget, all eight questions answered, and a written evaluation.
 
 ## Notifications
 

@@ -109,3 +109,13 @@ textarea.answer{min-height:130px;margin-top:12px}
 /* --- floorplan doorways -------------------------------------- */
 .map .doorlabel{font-size:11px;fill:#5c6b77}
 .map .door{pointer-events:none}
+
+/* --- procedure cards ---------------------------------------- */
+.proc-card{background:white;border:1px solid var(--line);border-radius:8px;padding:12px}
+.proc-card.on{border-color:#bfdc98;background:#fcfef8}
+.proc-card.unsupported{border-color:#dc9a43;background:#fffaf2}
+.proc-card .procedure{border:0;padding:0;background:transparent;border-radius:0}
+.proc-card .cost{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.proc-card .gap-line{margin:10px 0 0;font-size:13px;color:#96621b}
+textarea.owner{min-height:58px;font-size:13px;margin-top:10px}
+.proc-card .tiny{display:block;margin-top:4px}
