@@ -1,1 +1,57 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Secure the Office • Physical Security Lab</title><meta name="description" content="Research real products. Build layered physical security. Test your office against incidents."><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23101e2d'/%3E%3Cpath d='M16 5 26 9v8c0 6-10 11-10 11S6 23 6 17V9Z' fill='%23c4f568'/%3E%3C/svg%3E"><link rel="stylesheet" href="style.css"><script defer src="app.js"></script></head><body><header><a class="brand" href="#" aria-label="Secure the Office home"><span class="brandmark">S/O</span><span>SECURE THE OFFICE<small>PHYSICAL SECURITY LAB</small></span></a><div class="header-actions"><span id="saved">Saved on this device</span><button onclick="exportWork()">↓ Save file</button><button onclick="document.querySelector('#import').click()">↑ Open file</button><input id="import" type="file" accept="application/json,.json" hidden></div></header><div class="shell"><aside class="nav"><div class="mission-label">OPERATION 01</div><h2>Hold the perimeter.</h2><p>A small office. Valuable data.<br>Your security decisions.</p><nav id="nav"></nav><div class="rank"><small>YOUR CLEARANCE</small><strong id="rank"></strong><div class="meter"><i id="progress"></i></div><span id="xp"></span></div><button class="text-button" onclick="setTab('brief')">ⓘ Mission & lesson guide</button></aside><main><div class="missionbar"><span><b>EXETER / RIVERSIDE OFFICE</b><small>24 staff · public reception · ground floor</small></span><span class="budget"><small>CLASSROOM BUDGET</small><b id="budget"></b></span></div><div id="app"></div></main></div><div id="toast" role="status" aria-live="polite"></div><dialog id="editor"><div id="dialog-body"></div></dialog></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secure the Office • Physical Security Lab</title>
+<meta name="description" content="Research real products, build layered physical security and test an office against incidents. Mapped to BTEC AAQ Level 3 IT Unit 2.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23101e2d'/%3E%3Cpath d='M16 5 26 9v8c0 6-10 11-10 11S6 23 6 17V9Z' fill='%23c4f568'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css?v=2">
+<script defer src="app.js?v=2"></script>
+</head>
+<body>
+
+<a class="sr-only" href="#app">Skip to the main content</a>
+
+<header>
+  <a class="brand" href="#" aria-label="Secure the Office home">
+    <span class="brandmark">S/O</span>
+    <span>SECURE THE OFFICE<small>PHYSICAL SECURITY LAB</small></span>
+  </a>
+  <div class="header-actions">
+    <span id="saved">Nothing saved yet</span>
+    <button onclick="exportWork()">Save file</button>
+    <button onclick="document.querySelector('#import').click()">Open file</button>
+    <input id="import" type="file" accept="application/json,.json" hidden>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="nav">
+    <div class="mission-label">OPERATION 01</div>
+    <h2>Hold the perimeter.</h2>
+    <p>A small office. Valuable data.<br>Your security decisions.</p>
+    <nav id="nav" aria-label="Sections"></nav>
+    <div class="rank">
+      <small>YOUR CLEARANCE</small>
+      <strong id="rank"></strong>
+      <div class="meter"><i id="progress"></i></div>
+      <span id="xp"></span>
+    </div>
+    <button class="text-button" onclick="setTab('brief')">Mission and lesson guide</button>
+  </aside>
+
+  <main>
+    <div class="missionbar">
+      <span><b>EXETER / RIVERSIDE OFFICE</b><small>24 staff · public reception · ground floor · river to the rear</small></span>
+      <span class="budget"><small>CLASSROOM BUDGET</small><b id="budget"></b></span>
+    </div>
+    <div id="app"></div>
+  </main>
+</div>
+
+<div id="toasts" class="toasts" role="region" aria-label="Notifications" aria-live="polite"></div>
+<dialog id="editor"><div id="dialog-body"></div></dialog>
+
+</body>
+</html>
