@@ -82,6 +82,82 @@ const PROCEDURES = [
     needs: [], needsText: '' }
 ];
 
+/* ------------------------------------------------------------------ examples
+   A reference shelf, not a shop. These are generic product CATEGORIES with the
+   typical UK price range for one unit, so a student knows roughly what they are
+   looking for and whether the page they have found is sensibly priced. Nothing
+   here can be saved as evidence: the record still has to be a real supplier page
+   the student found, priced and dated themselves. Ranges are classroom estimates,
+   exclude installation unless stated, and go out of date — check them each year. */
+const EXAMPLES = {
+  locks: { low: 25, high: 90, unit: 'per door', check: 'Quote the standard (TS007 3-star, SS312 Diamond, BS3621), not just "high security".', items: [
+    ['Anti-snap euro cylinder', 'Swaps into an existing door in minutes. Cheapest real upgrade there is.'],
+    ['Restricted-key mortice deadlock', 'Keys can only be cut against a registered code, so copies are controlled.']] },
+  access: { low: 180, high: 900, unit: 'per door', check: 'Say whether the price is one standalone door kit or a per-door share of a networked system, and whether the maglock and power supply are included.', items: [
+    ['Standalone proximity door kit', 'Reader, controller, lock release and power supply for one door. No central log.'],
+    ['Networked access control per door', 'Logs who opened what and when, and revokes a card centrally. The logging is the point.']] },
+  biometric: { low: 120, high: 500, unit: 'per door', check: 'Note the false-acceptance rate and what happens when the reader fails or a finger is wet.', items: [
+    ['Fingerprint reader for one door', 'Ties entry to a person rather than to a card that can be lent or lost.'],
+    ['Reader with card fallback', 'Two factors at the door; the fallback is also the weak point to discuss.']] },
+  barriers: { low: 90, high: 400, unit: 'each, before groundworks', check: 'Bollard prices almost never include the digging and concrete. Say so.', items: [
+    ['Fixed steel bollard, root-fixed', 'Stops a vehicle reaching the wall. Cheap per unit, you need several.'],
+    ['Removable or telescopic bollard', 'Keeps a fire route or delivery bay usable. Dearer, and depends on someone locking it.']] },
+  gates: { low: 600, high: 5000, unit: 'per gate', check: 'Manual or automated changes the price by thousands. Name which, and whether install is in the figure.', items: [
+    ['Manual swing or sliding gate', 'Controls the entrance at a price a small office can defend.'],
+    ['Automated sliding gate with intercom', 'Controls entry without staff walking out, but needs power, safety edges and maintenance.']] },
+  cages: { low: 250, high: 900, unit: 'each', check: 'Give the size (U height or cage dimensions) — a rack that does not fit the kit is not a control.', items: [
+    ['Lockable server rack cabinet', 'A second layer around the equipment once someone is in the room.'],
+    ['Welded mesh equipment cage', 'Encloses kit that cannot go in a cabinet, such as a rack that stays open.']] },
+  devicelock: { low: 15, high: 80, unit: 'each or per pack', check: 'Per device or per pack? Twenty-four desks needs twenty-four locks.', items: [
+    ['Cable lock for laptops', 'Stops the opportunist walk-past. Does not stop someone with cutters.'],
+    ['Tamper-evident asset labels', 'Marks ownership and makes resale harder; helps recovery, not prevention.']] },
+  flood: { low: 250, high: 1400, unit: 'per opening', check: 'Give the protected height in mm and say who is expected to deploy it, and when.', items: [
+    ['Demountable flood barrier for a doorway', 'Cheap, but someone has to fit it before the water arrives.'],
+    ['Automatic or permanent flood door', 'Works with nobody on site. Several times the price.']] },
+  cooling: { low: 900, high: 2500, unit: 'per unit, install extra', check: 'Quote the cooling capacity in kW against the load in the room, not just the box price.', items: [
+    ['Wall-mounted split air conditioner', 'Standard answer for a small comms room. Install is usually a separate quote.'],
+    ['Dedicated close-control cooling unit', 'Built for equipment rather than people. Better, dearer, needs a plant space.']] },
+  power: { low: 350, high: 1200, unit: 'per unit', check: 'Say the VA rating and the runtime you expect at your load — "a UPS" is not an answer.', items: [
+    ['Rack-mount line-interactive UPS', 'Rides out a short cut and shuts the servers down cleanly.'],
+    ['Online double-conversion UPS', 'Also cleans dirty mains. Dearer and less efficient.']] },
+  cctv: { low: 60, high: 700, unit: 'per camera, or per kit', check: 'One camera or a four-camera kit with a recorder? Say which, and how long recordings are kept.', items: [
+    ['IP dome or turret camera', 'Priced per camera; you need one per area you claim to cover.'],
+    ['Four-camera NVR kit', 'Recorder and cameras together — usually the honest way to price a small site.']] },
+  motion: { low: 20, high: 450, unit: 'per sensor, or per kit', check: 'A sensor is not an alarm. Say whether the price includes the panel and who the signal goes to.', items: [
+    ['PIR sensor or door contact', 'Added to an existing panel. Pennies compared with the panel itself.'],
+    ['Wireless intruder alarm kit', 'Panel, sensors and siren for a small site, self-monitored.']] },
+  fire: { low: 40, high: 150, unit: 'each', check: 'Match the extinguisher class to the hazard — CO2 or clean agent near electrical equipment, not water.', items: [
+    ['CO2 extinguisher', 'For electrical risks. Leaves no residue on equipment.'],
+    ['Foam or water extinguisher', 'For paper and furniture. Wrong tool for a live electrical fire.']] },
+  gas: { low: 250, high: 10000, unit: 'rack unit vs room system', check: 'A rack-sized aerosol unit and a room-flooding clean-agent system differ by a factor of twenty. Say which you are pricing.', items: [
+    ['Self-actuating aerosol unit for a rack', 'Sits above the kit and discharges on heat. Affordable, protects the rack only.'],
+    ['Room clean-agent suppression system', 'Protects the whole room. Needs design, sealing, alarms and signage.']] },
+  mediasafe: { low: 300, high: 1200, unit: 'each', check: 'Data media need a lower internal temperature than paper — quote the media rating and the protection time.', items: [
+    ['Fire-rated data media safe', 'Rated to keep tapes and drives below their survival temperature.'],
+    ['Fire-resisting document cabinet', 'Paper-rated only; cheaper, and not enough for backup media.']] },
+  signs: { low: 8, high: 30, unit: 'each', check: 'Cheap, so there is no excuse for an unsigned restricted door. Say where each sign goes.', items: [
+    ['Rigid restricted-access sign', 'Puts the rule where the person has to decide.'],
+    ['CCTV in operation sign', 'Also a legal expectation where cameras record the public.']] },
+  badges: { low: 50, high: 900, unit: 'per pack, or per printer', check: 'Cards and lanyards are pounds; a printer that lets you issue and void them is hundreds. Say which you bought.', items: [
+    ['Visitor badge book and holders', 'Enough for a 24-person office with visitors, for very little.'],
+    ['ID card printer and blank cards', 'Lets you issue and reissue staff cards in-house.']] },
+  backupcool: { low: 350, high: 900, unit: 'each', check: 'Say what it stands in for and how long it can hold the room — that is what makes it compensating.', items: [
+    ['Portable air conditioner with ducting', 'Wheeled in when the primary unit fails. Needs somewhere to vent.'],
+    ['Second fixed split unit on changeover', 'Better, and only compensating if it is normally off.']] }
+};
+const exRange = id => EXAMPLES[id] ? `${money0(EXAMPLES[id].low)}–${money0(EXAMPLES[id].high)} ${EXAMPLES[id].unit}` : '';
+function examplesBlock(id) {
+  const e = EXAMPLES[id];
+  if (!e) return '';
+  return `<details class="examples">
+    <summary>Typical products and prices</summary>
+    <p class="tiny">Classroom reference only — you still have to find a real supplier page, price it and date it.</p>
+    ${e.items.map(([name, note]) => `<p class="ex-item"><b>${name}</b><span>${note}</span></p>`).join('')}
+    <p class="ex-range"><b>Typical UK range:</b> ${exRange(id)}</p>
+    <p class="tiny"><b>What to quote:</b> ${e.check}</p>
+  </details>`;
+}
+
 /* checks are built at evaluation time; here: id, title, brief, zone, spec */
 const SCENARIOS = [
   ['tailgate', 'The extra visitor', 'A visitor follows a member of staff through the door from reception without signing in.', 'reception', 'A1.2.4'],
@@ -118,7 +194,7 @@ const LEGACY_KEY = 'secure-office-v1';
 const fresh = () => ({
   version: 2,
   team: '',
-  budget: 10000,
+  budget: 14000,
   researchRule: 'deployed',   // 'deployed' = compare suppliers for controls you use; 'all' = every technique
   products: {},               // typeId -> [slot0, slot1]
   compare: {},                // typeId -> written supplier comparison
@@ -190,8 +266,15 @@ function supported(id) {
 function declared(id) { return !!state.procedures[id] && supported(id); }
 function ownerNote(id) { return (state.procedureNotes[id] || '').trim(); }
 function procComplete(id) { return declared(id) && ownerNote(id).length >= 25; }
+/* Fingerprint of the DESIGN only: which control sits in which zone, at what price,
+   plus the declared procedures and the budget. Deliberately NOT the whole products
+   object — recording a second supplier, fixing a typo or reloading the page must not
+   invalidate incident results. Sorted so key order can never change the hash. */
 function signature() {
-  const text = JSON.stringify([state.placements, state.products, state.procedures, state.budget]);
+  const design = state.placements
+    .map(p => `${p.type}|${p.zone}|${p.slot}|${state.products[p.type]?.[p.slot]?.price ?? 0}`)
+    .sort();
+  const text = JSON.stringify([design, PROCEDURES.map(x => !!state.procedures[x.id]), state.budget]);
   let h = 2166136261;
   for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
   return (h >>> 0).toString(16);
@@ -207,7 +290,10 @@ function staleRuns() {
 function counts() {
   const req = requiredTypes();
   return {
-    products: TYPES.reduce((n, t) => n + (state.products[t.id] || []).filter(validProduct).length, 0),
+    /* records that count towards XP: up to two for each technique actually required */
+    products: req.reduce((n, t) => n + Math.min(2, (state.products[t] || []).filter(validProduct).length), 0),
+    /* every complete record on file, deployed or not — display only */
+    recorded: TYPES.reduce((n, t) => n + (state.products[t.id] || []).filter(validProduct).length, 0),
     pairs: req.filter(pairReady).length,
     compares: req.filter(compareReady).length,
     required: req.length,
@@ -219,13 +305,22 @@ function counts() {
     purposes: GROUPS.map((g, i) => state.placements.some(p => type(p.type)?.group === i))
   };
 }
+/* A design that fully addresses all twelve incidents needs 17 of the 18 techniques
+   and 27 placements. The meter measures distance to THAT, so a student cannot reach
+   a high rank by filling in product forms and building nothing. */
+const CLEARANCE_TYPES = 17;
+const CLEARANCE_PLACEMENTS = 27;
 function maxXp() {
-  const req = Math.max(1, requiredTypes().length);
-  return req * 30 + req * 25 + Math.min(req, 18) * 15 + SCENARIOS.length * 40 + QUESTIONS.length * 10 + PROCEDURES.length * 10;
+  const req = state.researchRule === 'all'
+    ? TYPES.length
+    : Math.max(CLEARANCE_TYPES, requiredTypes().length);
+  return req * 30 + req * 25 + CLEARANCE_PLACEMENTS * 15
+    + SCENARIOS.length * 60 + QUESTIONS.length * 10 + PROCEDURES.length * 10;
 }
 function xpNow() {
   const c = counts();
-  return c.products * 15 + c.compares * 25 + Math.min(state.placements.length, 18) * 15 + c.wins * 40 + c.answered * 10 + c.procsDone * 10;
+  return c.products * 15 + c.compares * 25 + Math.min(state.placements.length, CLEARANCE_PLACEMENTS) * 15
+    + c.wins * 60 + c.answered * 10 + c.procsDone * 10;
 }
 function clearance() {
   const c = counts();
@@ -311,7 +406,7 @@ try {
 function persist() {
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify(state));
-    setSaved('Saved on this device');
+    setSaved('Autosaved ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }));
   } catch (e) {
     setSaved('Storage full — save a file');
     toast('Device storage is full', { type: 'error', detail: 'Nothing new can be saved here. Use Save file to keep your work, then carry on.', duration: 9000 });
@@ -411,8 +506,10 @@ function rankName() {
 function updateStats() {
   const c = counts(), xp = xpNow(), over = spent() > state.budget;
   $('#rank').textContent = rankName();
-  $('#xp').textContent = `${xp} XP · ${c.compares}/${c.required || 0} supplier comparisons`;
-  $('#progress').style.width = Math.min(100, xp / maxXp() * 100) + '%';
+  $('#xp').textContent = c.required
+    ? `${xp} XP · ${c.compares}/${c.required} supplier comparisons`
+    : `${xp} XP · nothing deployed yet`;
+  $('#progress').style.width = (clearance() ? 100 : Math.min(100, xp / maxXp() * 100)) + '%';
   $('#budget').textContent = over ? money(spent() - state.budget) + ' over' : money(state.budget - spent()) + ' left';
   $('#budget').classList.toggle('over', over);
 
@@ -448,7 +545,8 @@ const TABS = [
   ['research', 'Research lab'],
   ['simulate', 'Incident simulator'],
   ['exam', 'Exam practice'],
-  ['report', 'Mission report']
+  ['report', 'Mission report'],
+  ['brief', 'Mission and lesson guide']
 ];
 
 function setTab(t, announce) {
@@ -503,7 +601,7 @@ function doorways() {
 function mapView(attack = '') {
   /* The outer shell is a gapped path so the two external doors break the wall. */
   const shell = 'M40 130H163M197 130H700M700 130V455M700 455H382M348 455H40M40 455V130';
-  return `<svg class="map" viewBox="0 0 740 500" role="img" aria-label="Office floorplan. Seven zones off a central corridor, with a main entrance into reception and a service door into the delivery entrance. Use the zone buttons below the plan to choose a zone.">
+  return `<svg class="map" viewBox="0 0 740 500" role="group" aria-label="Office floorplan. Seven zones off a central corridor, with a main entrance into reception and a service door into the delivery entrance. Choose a zone on the plan, or use the buttons below it.">
     <defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#dce6e8" stroke-width=".5"/></pattern></defs>
     <rect width="740" height="500" fill="url(#grid)"/>
     <text x="30" y="24">SITE PLAN / GROUND FLOOR</text><text x="668" y="24">N &#8593;</text>
@@ -511,7 +609,11 @@ function mapView(attack = '') {
     <path d="${shell}" fill="none" stroke="#5b6f7d" stroke-width="4"/>
     ${ZONES.map(z => {
       const n = state.placements.filter(p => p.zone === z[0]).length;
-      return `<g onclick="selectZone('${z[0]}')">
+      return `<g role="button" tabindex="0" aria-pressed="${zone === z[0]}"
+        aria-label="${z[1]}. ${n} control${n === 1 ? '' : 's'} deployed. ${zinfo(z[0])[6]}"
+        onclick="selectZone('${z[0]}')"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectZone('${z[0]}')}">
+        <title>${z[1]} — ${n} control${n === 1 ? '' : 's'} deployed</title>
         <rect class="zone ${zone === z[0] ? 'selected' : ''}" x="${z[2]}" y="${z[3]}" width="${z[4]}" height="${z[5]}" rx="3"/>
         <text class="roomname" x="${z[2] + 12}" y="${z[3] + 25}">${z[1]}</text>
         <text x="${z[2] + 12}" y="${z[3] + 45}">${z[7]}</text>
@@ -691,12 +793,16 @@ function deploy(e) {
 function removePlacement(id) {
   const gone = state.placements.find(p => p.id === id);
   if (!gone) return;
+  const before = PROCEDURES.filter(p => state.procedures[p.id] && supported(p.id)).map(p => p.id);
   state.placements = state.placements.filter(p => p.id !== id);
   persist();
   render();
+  const broken = before.filter(pid => !supported(pid)).map(pid => proc(pid).name);
   toast(`Removed from ${zname(gone.zone)}`, {
-    type: 'warn',
-    detail: `${type(gone.type).name} · ${money(state.budget - spent())} now available.`,
+    type: broken.length ? 'error' : 'warn',
+    detail: `${type(gone.type).name} · ${money(state.budget - spent())} now available.`
+      + (broken.length ? ` That was the only equipment behind ${broken.join(' and ')} — you are still paying for it, but it will not count in an incident until you put something back.` : ''),
+    duration: broken.length ? 9000 : 5200,
     action: {
       label: 'Undo',
       run: () => {
@@ -713,7 +819,7 @@ function removePlacement(id) {
 function researchView() {
   const c = counts();
   const ruleNote = state.researchRule === 'deployed'
-    ? 'You compare two suppliers for each technique you actually deploy. Deploy a control and its research task appears below.'
+    ? 'Every technique is listed below and you can research any of them now. The ones you deploy are the ones that must have two suppliers compared.'
     : 'You compare two suppliers for every technique in the pack, whether you deploy it or not.';
 
   return head('Know what you are buying.',
@@ -738,6 +844,7 @@ function researchCard(t) {
     <div class="rc-top"><h3>${t.name}</h3>${specTag(t.spec)}</div>
     <p>${t.blurb}</p>
     <p class="tiny">Normally protects: ${t.zones.map(zname).join(', ').toLowerCase()}.</p>
+    ${examplesBlock(t.id)}
     <a class="tiny" href="https://www.google.com/search?q=${encodeURIComponent(t.search)}" target="_blank" rel="noopener noreferrer">Find UK suppliers</a>
     <div class="slots">${[0, 1].map(k =>
       `<button class="${validProduct(a[k]) ? 'complete' : ''}" onclick="editProduct('${t.id}',${k})">${validProduct(a[k]) ? '✓ ' + esc(a[k].supplier.slice(0, 16)) : '+ Supplier ' + (k + 1)}</button>`).join('')}</div>
@@ -780,12 +887,14 @@ function editProduct(id, slot) {
       <button onclick="$('#editor').close()" aria-label="Close product form">✕</button>
     </div>
     <p class="tiny">Use a real supplier page. Your evidence is recorded here, not verified automatically — your teacher checks it. ${specTag(t.spec)}</p>
+    ${examplesBlock(id)}
     <form id="productform">
       <div class="formgrid">
         <label>Product name<input name="name" required value="${esc(p.name)}"></label>
         <label>Supplier name<input name="supplier" required value="${esc(p.supplier)}"></label>
         <label class="full">Product page URL<input name="url" type="url" placeholder="https://…" required value="${esc(p.url)}"></label>
-        <label>Price or quoted estimate (£)<input name="price" type="number" min="0" step="0.01" required value="${p.price ?? ''}"></label>
+        <label>Price or quoted estimate (£)<input name="price" type="number" min="0" step="0.01" required value="${p.price ?? ''}">
+          ${EXAMPLES[id] ? `<span class="tiny">Typical: ${exRange(id)}</span>` : ''}</label>
         <label>Price basis and date<input name="priceNote" placeholder="per unit, VAT included, checked 21 Sept" required value="${esc(p.priceNote)}"></label>
         <label class="full">What it does, and what it does not do<textarea name="description" required minlength="20" placeholder="Features, what it protects against, and one limitation.">${esc(p.description)}</textarea></label>
         <label class="full">Product image URL<input name="image" type="url" placeholder="https://… or attach a screenshot below" value="${weburl(editImage) ? esc(editImage) : ''}"></label>
@@ -831,6 +940,14 @@ function editProduct(id, slot) {
     persist();
     $('#editor').close();
     render();
+    const ex = EXAMPLES[id];
+    if (ex && (p2.price < ex.low / 3 || p2.price > ex.high * 3)) {
+      toast('That price is a long way outside the typical range', {
+        type: 'warn',
+        duration: 9000,
+        detail: `${t.name} normally costs ${exRange(id)}. Check whether you have priced one unit or a whole system, and whether installation and VAT are in the figure. Keep it if you can justify it — just say what it includes.`
+      });
+    }
     toast(`Evidence saved: ${esc(p2.name)}`, {
       type: 'ok',
       detail: pairReady(id) ? 'Both suppliers recorded. Now write which one you would buy.' : 'Add a second supplier so you can compare.',
@@ -911,7 +1028,7 @@ async function runIncident(id) {
     const after = latestRuns().filter(r => r.score === 100).length;
     toast(`${s[1]}: fully addressed`, {
       type: 'xp',
-      detail: after > before ? `+40 XP. ${after} of ${SCENARIOS.length} incidents now covered by your current design.` : 'Already credited for this design.'
+      detail: after > before ? `+60 XP. ${after} of ${SCENARIOS.length} incidents now covered by your current design.` : 'Already credited for this design.'
     });
   } else {
     toast(`${s[1]}: ${run.score}%`, {
@@ -1182,7 +1299,7 @@ function briefView() {
           <li>Answer the exam-practice questions and write your evaluation.</li>
         </ol>
         <label>Mission budget (£)<input type="number" min="0" max="1000000" step="100" value="${state.budget}" onchange="setBudget(this.value)"></label>
-        <p>£10,000 is a classroom constraint, not a recommended real-world figure. Raise it if you are pricing quoted systems rather than single units.</p>
+        <p>£14,000 is a classroom constraint, not a recommended real-world figure. A design that fully addresses all ${SCENARIOS.length} incidents needs about ${CLEARANCE_PLACEMENTS} controls plus procedures: near the bottom of the typical price ranges that is roughly £7,000, at mid-range prices roughly £11,000. Lower it to force harder trade-offs; raise it if students are pricing installed or quoted systems rather than single units.</p>
         <p>Procedures are charged against the same budget at an indicative annual cost — training, staff time, keyholding, offsite storage and destruction contracts are all real line items. All seven come to ${money0(PROCEDURES.reduce((a, p) => a + p.cost, 0))}. The figures are classroom estimates, not quotes.</p>
         <label for="rulepick">Research requirement</label>
         <select id="rulepick" onchange="setRule(this.value)">
@@ -1198,12 +1315,12 @@ function briefView() {
           <li>15 XP for each complete product record.</li>
           <li>25 XP for each two-supplier comparison with a written choice.</li>
           <li>15 XP for each deployment.</li>
-          <li>40 XP for each incident fully addressed by your current design.</li>
+          <li>60 XP for each incident fully addressed by your current design — testing is worth more than paperwork.</li>
           <li>10 XP for each exam question answered.</li>
           <li>10 XP for each procedure that is supported by the design and has a named owner.</li>
         </ul>
         <p>Changing the design makes old incident results historical — retest to earn the XP again. Repeating an identical run does not stack points.</p>
-        <p>Your work is stored in this browser only. Save a file before you change computer or the lesson ends.</p>
+        <p>Every change autosaves in this browser straight away, so closing the tab by accident loses nothing — the header shows the time of the last save. The browser is the only place it lives, though: use <b>Save file</b> before changing computer, and if the machine is shared, before someone resets it.</p>
         <h3 class="blockhead">Where this sits in Unit 2</h3>
         <ul class="coverage">${Object.entries(SPEC).map(([c, l]) => `<li class="on"><span>·</span> ${l}</li>`).join('')}</ul>
         <p class="tiny">Pearson Level 3 AAQ BTEC National in Information Technology, Unit 2: Cyber Security and Incident Management. Externally assessed by written examination.</p>
@@ -1278,7 +1395,7 @@ function boot() {
     } finally { $('#import').value = ''; }
   };
 
-  setSaved(localStorage.getItem(STORE_KEY) ? 'Saved on this device' : 'Nothing saved yet');
+  setSaved(localStorage.getItem(STORE_KEY) ? 'Autosaved in this browser' : 'Autosaves as you work');
   render();
   lastRank = rankName();
 

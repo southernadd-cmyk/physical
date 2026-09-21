@@ -31,6 +31,9 @@ and the Mission report shows a coverage list built from what the student actuall
 
 1. **Research** two products from different suppliers for each technique, recording name, image,
    description, supplier link, price and price basis/date — then write which one they would buy and why.
+   Each technique carries a built-in *Typical products and prices* reference: two generic product
+   categories, the typical UK range for one unit and what the price needs to state. It is a starting
+   point for the search, not evidence — nothing in it can be saved as a record.
 2. **Deploy** products onto the office floorplan with a written justification for the zone and the supplier.
 3. **Declare procedures** — visitor escorting, alarm response, key control, backups, disposal and so on.
    Procedures are charged to the same budget at an indicative annual cost, must be supported by equipment
@@ -39,6 +42,18 @@ and the Mission report shows a coverage list built from what the student actuall
 5. **Answer** eight exam-practice questions using the unit's command words, with indicative content to
    self-assess against.
 6. **Evaluate** and print or save the mission report as a PDF.
+
+## Example products
+
+Every technique has a reference card in the research lab and inside the product form: what the two
+common product categories are, what they each do and do not do, the typical UK price range for a
+single unit, and what a credible price has to say (rating, capacity, whether install and VAT are
+included). Students still have to find a real supplier page, price it and date it themselves — the
+reference cannot be saved as a record. Prices well outside the range trigger a warning that asks
+whether a unit has been confused with a system; it warns, it does not block.
+
+The ranges are classroom estimates and go stale. They live in the `EXAMPLES` object in `app.js`,
+one entry per technique — worth a look each September.
 
 ## Research requirement
 
@@ -61,7 +76,7 @@ Two modes, switchable in *Mission and lesson guide* or from the research lab:
 
 ## Procedures are not free
 
-Ticking all seven costs £2,740 of the £10,000 budget, so procedures compete with equipment for the same
+Ticking all seven costs £2,740 of the £14,000 budget, so procedures compete with equipment for the same
 money — which is the trade-off exam question 8 asks students to evaluate.
 
 Each procedure also depends on equipment. Alarm response needs CCTV or intruder detection somewhere in the
@@ -93,11 +108,18 @@ Self-awarded marks are for tracking only and appear on the printed report for th
 
 ## Scoring
 
-15 XP per complete product record; 25 per two-supplier comparison with a written choice; 15 per
-deployment; 40 per incident fully addressed by the current design; 10 per exam question answered;
-10 per supported procedure with a named owner.
-Repeated runs of an unchanged design do not stack XP. Research, deployments, procedures and budget
-changes invalidate old incident results.
+15 XP per complete product record for a technique the student deploys; 25 per two-supplier comparison
+with a written choice; 15 per deployment; 60 per incident fully addressed by the current design; 10 per
+exam question answered; 10 per supported procedure with a named owner.
+
+Product records for techniques that are never deployed earn nothing, and the meter is measured against
+a design capable of clearing all twelve incidents (17 techniques, 27 placements), so filling in forms
+without building anything does not move the rank.
+
+Repeated runs of an unchanged design do not stack XP. A result is invalidated only by a change to the
+**design**: adding, moving or removing a control, changing the price of a control that is deployed,
+declaring or dropping a procedure, or changing the budget. Recording a second supplier, editing a
+description, reopening a save file and reloading the page do not invalidate anything.
 
 **Security architect** clearance requires a written supplier comparison for every technique used, at
 least one control of each of the five purposes, all twelve incidents fully addressed, every declared
@@ -113,15 +135,20 @@ whole region is a single polite live region for screen readers.
 
 ## Budget
 
-The default £10,000 is a classroom constraint, not a recommended real-world budget; it is adjustable
-in *Mission and lesson guide*. Price one placement as one unit or a quoted system for the selected
+The default £14,000 is a classroom constraint, not a recommended real-world budget; it is adjustable
+in *Mission and lesson guide*. For scale: a design that fully addresses all twelve incidents needs
+about 27 placements plus the six supporting procedures — roughly £7,000 at the bottom of the typical
+price ranges and about £11,000 at mid-range prices, so there is room to make choices but not room to
+buy everything. Lower it to force harder trade-offs; raise it if students are pricing installed or
+quoted systems rather than single units. Price one placement as one unit or a quoted system for the selected
 zone. Ask students to identify estimates, VAT and installation assumptions. Keep evacuation routes
 usable — physical security never overrides fire safety.
 
 ## Saving
 
-Progress is stored in the current browser only. **Save file** downloads a JSON checkpoint and
-**Open file** resumes it on another PC. Save files from the previous version are migrated
+Every change is autosaved to browser storage immediately and the header shows the time of the last
+save, so closing the tab by accident loses nothing. The browser is the only place it lives, though:
+**Save file** downloads a JSON checkpoint and **Open file** resumes it on another PC. Save files from the previous version are migrated
 automatically: products, placements, procedures and the evaluation carry over, and the old
 compensating-cooling task is renamed. Incident results are cleared on migration because the
 scenario checks changed. Browser storage has a quota — download a save file when prompted, and
