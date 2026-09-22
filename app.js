@@ -451,8 +451,10 @@ function toast(title, opts = {}) {
   const key = opts.key || (type + '|' + title);
 
   // repeat of the same message: bump the count instead of stacking duplicates
+  const contentKey = JSON.stringify([title, opts.detail || '', opts.action?.label || '']);
   const twin = liveToasts.find(t => t.key === key);
-  if (twin) {
+  if (twin && twin.contentKey !== contentKey) dismissToast(twin);
+  if (twin && twin.contentKey === contentKey) {
     twin.count++;
     const badge = twin.el.querySelector('.toast-count');
     badge.textContent = '×' + twin.count;
@@ -476,7 +478,7 @@ function toast(title, opts = {}) {
     <button class="toast-close" type="button" aria-label="Dismiss notification">✕</button>
     <i class="toast-timer"></i>`;
 
-  const item = { id: ++toastSeq, key, el, count: 1, timer: null, duration };
+  const item = { id: ++toastSeq, key, contentKey, el, count: 1, timer: null, duration };
   el.querySelector('.toast-close').onclick = () => dismissToast(item);
   const actionBtn = el.querySelector('.toast-action');
   if (actionBtn) actionBtn.onclick = () => { dismissToast(item); opts.action.run(); };
@@ -620,7 +622,7 @@ function mapView(attack='') {
   <text x="40" y="25">RIVERSIDE / GROUND FLOOR</text><text x="917" y="25">N ↑</text>
   <path d="M190 130V195" stroke="#91a9b3" stroke-width="36"/>
   <rect x="60" y="195" width="880" height="390" fill="#e0ebee" stroke="#526e7b" stroke-width="4"/>
-  ${ZONES.map(z=>{const n=state.placements.filter(p=>p.zone===z[0]).length;return `<g role="button" tabindex="0" aria-pressed="${zone===z[0]}" aria-label="${z[1]}, ${n} controls. ${z[6]}" onclick="selectZone('${z[0]}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectZone('${z[0]}')}"><title>${z[6]}</title><rect class="zone ${zone===z[0]?'selected':''}" x="${z[2]}" y="${z[3]}" width="${z[4]}" height="${z[5]}"/><text class="roomname" x="${z[2]+18}" y="${z[3]+36}">${z[1]}</text><text x="${z[2]+18}" y="${z[3]+62}">${z[7]}</text>${n?`<text class="zone-count" x="${z[2]+18}" y="${z[3]+z[5]-23}">● ${n} DEPLOYED</text>`:''}</g>`}).join('')}
+  ${ZONES.map(z=>{const n=state.placements.filter(p=>p.zone===z[0]).length;return `<g role="button" tabindex="0" aria-pressed="${zone===z[0]}" aria-label="${z[1]}, ${n} controls. ${z[6]}" onclick="selectZone('${z[0]}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectZone('${z[0]}')}"><title>${z[6]}</title><rect class="zone ${zone===z[0]?'selected':''}" x="${z[2]}" y="${z[3]}" width="${z[4]}" height="${z[5]}"/><text class="roomname" x="${z[2]+18}" y="${z[3]+(z[3]>=430?76:36)}">${z[1]}</text><text x="${z[2]+18}" y="${z[3]+(z[3]>=430?102:62)}">${z[7]}</text>${n?`<text class="zone-count" x="${z[2]+18}" y="${z[3]+z[5]-23}">● ${n} DEPLOYED</text>`:''}</g>`}).join('')}
   ${doorways()}
   <path d="M940 367V413" stroke="#e0ebee" stroke-width="8"/>
   <path d="M940 413h40" stroke="#416574" stroke-width="3"/>
