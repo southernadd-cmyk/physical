@@ -17,7 +17,7 @@ const SPEC = {
 };
 
 const GROUPS = [
-  ['Preventative', 'Stops an incident happening in the first place.'],
+  ['Preventative', 'Reduces the likelihood of an incident or blocks an unauthorised action.'],
   ['Detective', 'Spots unauthorised activity and raises an alert.'],
   ['Corrective', 'Limits the damage once something has happened.'],
   ['Directive', 'Tells people what they must do.'],
@@ -29,13 +29,13 @@ const TYPES = [
   { id: 'locks', group: 0, spec: ['A4'], name: 'Door locks', blurb: 'Anti-pick or restricted-key locks on doors to protected rooms.', search: 'anti pick high security door lock UK', zones: ['server', 'records', 'delivery', 'plant'] },
   { id: 'access', group: 0, spec: ['A4'], name: 'Card or fob entry', blurb: 'Electronic access control that can be logged and revoked.', search: 'proximity card access control door entry system UK', zones: ['reception', 'server', 'records', 'delivery'] },
   { id: 'biometric', group: 0, spec: ['A4'], name: 'Biometric reader', blurb: 'Fingerprint or iris reader for the highest-risk doors.', search: 'fingerprint door access control reader UK', zones: ['server', 'records'] },
-  { id: 'barriers', group: 0, spec: ['A4', 'A1.2.3'], name: 'Barriers and bollards', blurb: 'Fencing or bollards that keep vehicles off the site.', search: 'security bollards perimeter fencing UK', zones: ['perimeter'] },
+  { id: 'barriers', group: 0, spec: ['A4', 'A1.2.3'], name: 'Barriers and bollards', blurb: 'Fencing controls pedestrian access; rated bollards or barriers can resist vehicles.', search: 'security bollards perimeter fencing UK', zones: ['perimeter'] },
   { id: 'gates', group: 0, spec: ['A4'], name: 'Controlled gate', blurb: 'A gate that controls vehicle and pedestrian entry.', search: 'automatic security gate commercial UK', zones: ['perimeter'] },
   { id: 'cages', group: 0, spec: ['A4'], name: 'Cabinet or cage', blurb: 'A locked rack or cage around the equipment itself.', search: 'lockable server rack cabinet UK', zones: ['server'] },
-  { id: 'devicelock', group: 0, spec: ['A4'], name: 'Device locks', blurb: 'Cable locks, port blockers and asset marking for open areas.', search: 'laptop kensington cable lock asset tag UK', zones: ['office', 'reception', 'records'] },
+  { id: 'devicelock', group: 0, spec: ['A4'], name: 'Device locks', blurb: 'Physical cable locks anchor devices. Asset marking supports recovery but does not anchor a laptop.', search: 'laptop kensington cable lock asset tag UK', zones: ['office', 'reception', 'records'] },
   { id: 'flood', group: 0, spec: ['A1.1.2'], name: 'Flood defence', blurb: 'Keeps water away from equipment on the ground floor.', search: 'flood door barrier commercial UK', zones: ['server', 'delivery', 'plant'] },
   { id: 'cooling', group: 0, spec: ['A1.1.2'], name: 'Temperature control', blurb: 'Primary cooling that stops equipment overheating.', search: 'server room air conditioning UK', zones: ['server'] },
-  { id: 'power', group: 0, spec: ['A1.1.2'], name: 'Power protection', blurb: 'UPS or surge protection so a power fault does not destroy data.', search: 'rack mount UPS uninterruptible power supply UK', zones: ['server', 'plant'] },
+  { id: 'power', group: 0, spec: ['A1.1.2'], name: 'Power protection', blurb: 'A UPS supplies temporary battery power. Surge protection alone cannot cover a power cut.', search: 'rack mount UPS uninterruptible power supply UK', zones: ['server', 'plant'] },
   { id: 'cctv', group: 1, spec: ['A4'], name: 'CCTV', blurb: 'Monitors activity and records evidence for later.', search: 'commercial CCTV camera system UK', zones: ['perimeter', 'reception', 'office', 'server', 'records', 'delivery', 'plant'] },
   { id: 'motion', group: 1, spec: ['A4'], name: 'Intruder detection', blurb: 'Motion sensors or door contacts that trigger an alarm.', search: 'commercial intruder alarm motion sensor UK', zones: ['server', 'records', 'delivery', 'office'] },
   { id: 'fire', group: 2, spec: ['A1.1.2'], name: 'Fire suppression', blurb: 'Extinguishers or sprinklers suited to the hazard in that room.', search: 'office fire extinguisher electrical rated UK', zones: ['office', 'reception', 'records', 'delivery', 'plant'] },
@@ -47,13 +47,13 @@ const TYPES = [
 ];
 
 const ZONES = [
-  ['perimeter', 'Perimeter and car park', 30, 40, 680, 65, 'Vehicle and pedestrian access from the road.', 'ROAD ACCESS + SITE BOUNDARY'],
-  ['reception', 'Reception', 55, 145, 180, 130, 'Public entrance and visitor check-in.', 'PUBLIC TO STAFF ACCESS'],
-  ['office', 'Staff workspace', 255, 145, 235, 130, 'Open-plan desks, laptops and staff equipment.', 'OPEN PLAN OFFICE'],
-  ['server', 'Server room', 510, 145, 175, 130, 'Critical systems and sensitive equipment.', 'RESTRICTED / CRITICAL ASSETS'],
-  ['records', 'Records store', 55, 305, 180, 135, 'Confidential paper files and backup media.', 'CONFIDENTIAL STORAGE'],
-  ['delivery', 'Delivery entrance', 255, 305, 235, 135, 'Contractors and deliveries enter here.', 'SERVICE ACCESS'],
-  ['plant', 'Plant and services', 510, 305, 175, 135, 'Cooling plant, power and environmental risks.', 'BUILDING SERVICES']
+  ['perimeter','Perimeter and car park',40,40,920,90,'Control access from the road before people or vehicles reach the building.','ROAD ACCESS · SITE BOUNDARY'],
+  ['reception','Reception',60,195,280,155,'Public entrance. The internal door leads directly into the staff corridor.','VISITORS · CHECK-IN'],
+  ['office','Staff workspace',340,195,320,155,'Staff desks and laptops. Enter through the corridor door.','24 STAFF · EQUIPMENT'],
+  ['server','Server room',660,195,280,155,'Restricted room for critical systems, off the shared corridor.','RESTRICTED · CRITICAL'],
+  ['records','Records store',60,430,280,155,'Confidential records and backup media, accessible from the corridor.','CONFIDENTIAL STORAGE'],
+  ['delivery','Delivery entrance',340,430,320,155,'Service entrance connects deliveries to the internal corridor.','CONTRACTORS · SERVICE'],
+  ['plant','Plant and services',660,430,280,155,'Power and cooling plant. Doors open to the corridor and maintenance access.','POWER · COOLING']
 ];
 
 /* Procedures cost money and depend on equipment. `needs` is an any-of list of
@@ -67,7 +67,7 @@ const PROCEDURES = [
     needs: ['cctv', 'motion'], needsText: 'There is nothing to respond to until you deploy CCTV or intruder detection.' },
   { id: 'fireplan', name: 'Fire response and evacuation', cost: 260, spec: ['A1.1.2'],
     desc: 'Staff raise the alarm and evacuate; equipment is used only if trained and safe.',
-    needs: ['fire', 'gas'], needsText: 'A response plan needs suppression equipment for trained staff to use.' },
+    needs: [], needsText: '' },
   { id: 'coolplan', name: 'Temperature monitoring and changeover', cost: 180, spec: ['A1.1.2'],
     desc: 'Temperature is monitored and staff switch to standby cooling on alert.',
     needs: ['cooling', 'backupcool'], needsText: 'There is nothing to monitor or change over to until cooling is installed.' },
@@ -176,14 +176,14 @@ const SCENARIOS = [
 
 /* Exam-style practice. Command words match the Unit 2 external assessment. */
 const QUESTIONS = [
-  { id: 'q1', cmd: 'Identify', marks: 2, spec: 'A4', prompt: 'Identify two preventative physical security measures you have installed at the site perimeter.', indicative: ['One mark for each correctly named perimeter control, e.g. bollards, fencing, a controlled gate.', 'A detective control such as CCTV does not earn the mark here: it records, it does not prevent.'] },
+  { id: 'q1', cmd: 'Identify', marks: 2, spec: 'A4', prompt: 'Identify two preventative physical security measures you have installed at the site perimeter.', indicative: ['One mark for each correctly named perimeter control, e.g. bollards, fencing, a controlled gate.', 'CCTV mainly detects and records, but visible cameras may deter. Credit a clearly explained preventative role where the context supports it.'] },
   { id: 'q2', cmd: 'Describe', marks: 4, spec: 'A1.1.2', prompt: 'Describe two physical measures in your design that protect equipment from accidental or deliberate damage, and say what each one protects against.', indicative: ['One mark for naming each measure, one for linking it to a named hazard.', 'Accept flood barriers (water), suppression (fire), UPS (power loss or surge), cooling (overheating), media safe (loss of backups).', 'Damage here is not only malicious: fires, floods and power failures count.'] },
-  { id: 'q3', cmd: 'Explain', marks: 4, spec: 'A4', prompt: 'Explain why fitting a high-security lock to the server-room door does not, on its own, protect the equipment inside.', indicative: ['A single control is a single point of failure: a lock can be bypassed, propped open or defeated with a stolen key or card.', 'It does nothing about anyone already inside the building, or about staff who hold legitimate access.', 'It gives no alert and no evidence, so a defeat goes unnoticed.', 'Layers such as a cage, detection, and a response procedure cover what the lock cannot. This is defence in depth.'] },
-  { id: 'q4', cmd: 'Explain', marks: 4, spec: 'A4', prompt: 'Explain how CCTV helps an organisation both during and after a security incident.', indicative: ['During: it detects activity and lets a responder see what is happening before deciding how to act.', 'After: the recording is evidence for investigation, insurance, disciplinary action or the police.', 'Credit the limitation: CCTV is detective, not preventative. It does not stop entry, and it only helps if someone monitors or reviews it.'] },
+  { id: 'q3', cmd: 'Explain', marks: 4, spec: 'A4', prompt: 'Explain why fitting a high-security lock to the server-room door does not, on its own, protect the equipment inside.', indicative: ['A single control is a single point of failure: a lock can be bypassed, propped open or defeated with a stolen key or card.', 'It cannot protect against someone already inside that room or misuse by a person with legitimate room access.', 'It gives no alert and no evidence, so a defeat goes unnoticed.', 'Layers such as a cage, detection, and a response procedure cover what the lock cannot. This is defence in depth.'] },
+  { id: 'q4', cmd: 'Explain', marks: 4, spec: 'A4', prompt: 'Explain how CCTV helps an organisation both during and after a security incident.', indicative: ['During: it detects activity and lets a responder see what is happening before deciding how to act.', 'After: the recording is evidence for investigation, insurance, disciplinary action or the police.', 'CCTV does not physically block entry. It may deter, while detection needs monitoring or alerts and investigation needs usable recordings.'] },
   { id: 'q5', cmd: 'Explain', marks: 6, spec: 'A1.1.3', prompt: 'Explain why physical security measures depend on staff procedures. Use two procedures from your design as examples.', indicative: ['Equipment only works if people use it as intended, so human behaviour is part of the control, not separate from it.', 'Badges do not stop tailgating unless staff challenge people without one.', 'An alarm does nothing unless a named responder investigates it.', 'Access cards stay a risk until a leaver process revokes them.', 'Six marks needs two developed examples, each with the measure, the procedure and the consequence of the procedure failing.'] },
-  { id: 'q6', cmd: 'Explain', marks: 4, spec: 'A1.1.2', prompt: 'Explain the difference between a compensating control and a second preventative control, using the cooling in your design as an example.', indicative: ['A compensating control substitutes for a primary control that is unavailable or inadequate; it addresses the same risk by another route.', 'A second preventative control adds another layer while the first is still working.', 'Standby cooling only compensates when primary cooling has failed; running both continuously would be redundancy, not compensation.'] },
+  { id: 'q6', cmd: 'Explain', marks: 4, spec: 'A1.1.2', prompt: 'Explain the difference between a compensating control and a second preventative control, using the cooling in your design as an example.', indicative: ['A compensating control substitutes for a primary control that is unavailable or inadequate; it addresses the same risk by another route.', 'A second preventative control adds another layer while the first is still working.', 'Standby cooling is also redundancy; in this scenario it compensates for failed primary cooling. Explain which risk it addresses and when it takes over.'] },
   { id: 'q7', cmd: 'Evaluate', marks: 8, spec: 'A4', prompt: 'Evaluate your finished design against the budget. Explain what you prioritised, what you left out, and what risk remains.', indicative: ['A judgement is needed, not a list: which zones got the money and why those were the highest risk.', 'Reference the value of the assets in each zone, not just the cost of the kit.', 'Name at least one control that was cut and what that exposes.', 'Name a residual risk that money would not fix, e.g. staff behaviour, a shared door, an installation limit.', 'Top band: a supported judgement with trade-offs on both sides and a clear recommendation.'] },
-  { id: 'q8', cmd: 'Evaluate', marks: 6, spec: 'C1', prompt: 'Evaluate whether an organisation gets better value from spending £2,000 on physical security equipment or on staff training and procedures.', indicative: ['Both sides needed. Equipment works without cooperation and produces evidence, but is fixed, costly and can be bypassed.', 'Training addresses social engineering and tailgating, which no lock prevents, but it decays and depends on culture.', 'The strongest answers reject the either/or and justify a split with reference to the specific risks in the scenario.', 'The student has made this exact trade-off in their own design — credit any reference to what they spent on equipment against what they spent on procedures.'] }
+  { id: 'q8', cmd: 'Evaluate', marks: 6, spec: 'C1', prompt: 'Evaluate whether an organisation gets better value from spending £2,000 on physical security equipment or on staff training and procedures.', indicative: ['Both sides needed. Equipment can provide physical resistance, detection or evidence, but needs suitable installation, maintenance and staff use.', 'Training helps staff recognise social engineering and challenge tailgating, but skills need refreshing and procedures need support.', 'The strongest answers reject the either/or and justify a split with reference to the specific risks in the scenario.', 'The student has made this exact trade-off in their own design — credit any reference to what they spent on equipment against what they spent on procedures.'] }
 ];
 
 /* ---------------------------------------------------------------- state */
@@ -192,7 +192,7 @@ const STORE_KEY = 'secure-office-v2';
 const LEGACY_KEY = 'secure-office-v1';
 
 const fresh = () => ({
-  version: 2,
+  version: 3,
   team: '',
   budget: 14000,
   researchRule: 'deployed',   // 'deployed' = compare suppliers for controls you use; 'all' = every technique
@@ -203,11 +203,17 @@ const fresh = () => ({
   procedureNotes: {},   // who owns each declared procedure
   runs: [],
   answers: {},                // questionId -> { text, mark }
+  predictions: {},
+  debriefs: {},
   reflection: ''
 });
 
 let state = fresh();
-let tab = 'plan';
+let tab = 'home';
+let selectedIncident = 'tailgate';
+let researchFilter = 'all';
+let researchQuery = '';
+let loadWarning = ''; 
 let zone = 'reception';
 let activeRun = null;
 let running = false;
@@ -228,6 +234,19 @@ const weburl = s => { try { return ['http:', 'https:'].includes(new URL(s).proto
 const imgurl = s => weburl(s) || /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(s);
 const specTag = codes => codes.map(c => `<span class="spec" title="${esc(SPEC[c] || c)}">${esc(c)}</span>`).join('');
 
+function newId() {
+  if (globalThis.crypto?.randomUUID) return crypto.randomUUID();
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)), x => x.toString(16).padStart(2, '0')).join('');
+}
+const CAPABILITIES = {
+  power: [['ups','UPS with battery backup'],['surge','Surge protection only']],
+  devicelock: [['anchor','Physical lock that anchors the device'],['marking','Asset marking or port blocking only']],
+  barriers: [['vehicle','Vehicle-rated barrier or bollard'],['fence','Pedestrian fence or un-rated barrier']]
+};
+function capabilityField(id, product) {
+  if (!CAPABILITIES[id]) return '';
+  return `<label class="full">Confirm the product capability<select name="capability" required><option value="">Check the supplier specification…</option>${CAPABILITIES[id].map(([v,l]) => `<option value="${v}" ${product.capability === v ? 'selected' : ''}>${l}</option>`).join('')}</select><span class="tiny">Your selection affects incident checks. Verify it against the supplier evidence.</span></label>`;
+}
 function validProduct(p) {
   return !!p
     && ['name', 'supplier', 'description', 'url', 'image', 'priceNote'].every(k => typeof p[k] === 'string' && p[k].trim())
@@ -263,18 +282,16 @@ function supported(id) {
   const p = proc(id);
   return !p.needs.length || p.needs.some(hasAny);
 }
-function declared(id) { return !!state.procedures[id] && supported(id); }
+function declared(id) { return !!state.procedures[id] && supported(id) && ownerNote(id).length >= 25; }
 function ownerNote(id) { return (state.procedureNotes[id] || '').trim(); }
 function procComplete(id) { return declared(id) && ownerNote(id).length >= 25; }
-/* Fingerprint of the DESIGN only: which control sits in which zone, at what price,
-   plus the declared procedures and the budget. Deliberately NOT the whole products
-   object — recording a second supplier, fixing a typo or reloading the page must not
-   invalidate incident results. Sorted so key order can never change the hash. */
+/* Versioned effectiveness fingerprint: placements, capability and operational procedures.
+   Price, budget and evidence edits do not change incident protection. */
 function signature() {
   const design = state.placements
-    .map(p => `${p.type}|${p.zone}|${p.slot}|${state.products[p.type]?.[p.slot]?.price ?? 0}`)
+    .map(p => `${p.type}|${p.zone}|${p.slot}|${state.products[p.type]?.[p.slot]?.capability || 'unconfirmed'}`)
     .sort();
-  const text = JSON.stringify([design, PROCEDURES.map(x => !!state.procedures[x.id]), state.budget]);
+  const text = JSON.stringify(['engine-3', design, PROCEDURES.map(x => declared(x.id))]);
   let h = 2166136261;
   for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
   return (h >>> 0).toString(16);
@@ -285,7 +302,7 @@ function latestRuns() {
     .filter(Boolean);
 }
 function staleRuns() {
-  return state.runs.length > 0 && latestRuns().length < state.runs.length && latestRuns().length < SCENARIOS.length;
+  return SCENARIOS.some(s => state.runs.some(r=>r.id===s[0]) && !latestRuns().some(r=>r.id===s[0]));
 }
 function counts() {
   const req = requiredTypes();
@@ -305,10 +322,8 @@ function counts() {
     purposes: GROUPS.map((g, i) => state.placements.some(p => type(p.type)?.group === i))
   };
 }
-/* A design that fully addresses all twelve incidents needs 17 of the 18 techniques
-   and 27 placements. The meter measures distance to THAT, so a student cannot reach
-   a high rank by filling in product forms and building nothing. */
-const CLEARANCE_TYPES = 17;
+/* XP targets guide progression; clearance depends on demonstrated requirements. */
+const CLEARANCE_TYPES = 17; // Progress target, not a prescribed shopping list.
 const CLEARANCE_PLACEMENTS = 27;
 function maxXp() {
   const req = state.researchRule === 'all'
@@ -338,9 +353,9 @@ function clearance() {
 
 function migrate(s) {
   if (!s || typeof s !== 'object') throw Error('That is not a Secure the Office save file.');
-  if (s.version === 2) return s;
+  if (s.version === 2 || s.version === 3) return s;
   if (s.version === 1) {
-    const out = { ...fresh(), version: 2, team: s.team, budget: s.budget, reflection: s.reflection, researchRule: 'all' };
+    const out = { ...fresh(), version: 3, team: s.team, budget: s.budget, reflection: s.reflection, researchRule: 'all' };
     const renamed = { backup: 'backupcool' };
     for (const [k, v] of Object.entries(s.products || {})) {
       const id = renamed[k] || k;
@@ -392,7 +407,11 @@ function validateState(raw) {
   ).slice(-120);
   for (const q of QUESTIONS) {
     const a = s.answers?.[q.id];
-    if (a) n.answers[q.id] = { text: String(a.text || '').slice(0, 6000), mark: Number(a.mark) >= 0 ? Math.min(Number(a.mark), q.marks) : null };
+    if (a) n.answers[q.id] = { text: String(a.text || '').slice(0, 6000), mark: a.mark !== null && a.mark !== undefined && Number.isFinite(Number(a.mark)) && Number(a.mark) >= 0 ? Math.min(Number(a.mark), q.marks) : null };
+  }
+  for (const scene of SCENARIOS) {
+    n.predictions[scene[0]] = String(s.predictions?.[scene[0]] || '').slice(0, 2000);
+    n.debriefs[scene[0]] = String(s.debriefs?.[scene[0]] || '').slice(0, 4000);
   }
   n.reflection = String(s.reflection || '').slice(0, 12000);
   return n;
@@ -401,7 +420,7 @@ function validateState(raw) {
 try {
   const raw = localStorage.getItem(STORE_KEY) || localStorage.getItem(LEGACY_KEY);
   if (raw) state = validateState(JSON.parse(raw));
-} catch (e) { /* start fresh */ }
+} catch (e) { loadWarning = 'Your saved mission could not be read. The original browser data has been kept. Open a saved JSON file to recover your work before making changes.'; }
 
 function persist() {
   try {
@@ -444,7 +463,7 @@ function toast(title, opts = {}) {
 
   while (liveToasts.length >= 3) dismissToast(liveToasts[0]);
 
-  const duration = opts.duration || (type === 'error' ? 8000 : opts.action ? 7000 : 4800);
+  const duration = opts.duration ?? (type === 'error' ? 8000 : opts.action ? 7000 : 4800);
   const el = document.createElement('div');
   el.className = 'toast toast-' + type;
   el.innerHTML = `
@@ -475,6 +494,7 @@ function toast(title, opts = {}) {
 function restartTimer(item) {
   clearTimeout(item.timer);
   const bar = item.el.querySelector('.toast-timer');
+  if (item.duration === 0) { bar.hidden=true; return; }
   bar.style.animation = 'none';
   void bar.offsetWidth;
   bar.style.animation = `toastbar ${item.duration}ms linear forwards`;
@@ -514,7 +534,7 @@ function updateStats() {
   $('#budget').classList.toggle('over', over);
 
   if (lastRank && rankName() !== lastRank) {
-    toast(`Clearance raised: ${rankName()}`, {
+    toast(`Clearance updated: ${rankName()}`, {
       type: 'xp',
       detail: clearance()
         ? 'Every requirement is met. Print your report and hand it in.'
@@ -541,8 +561,9 @@ function nextGoal() {
 /* ---------------------------------------------------------------- render */
 
 const TABS = [
-  ['plan', 'Defence planner'],
+  ['home', 'Mission control'],
   ['research', 'Research lab'],
+  ['plan', 'Defence planner'],
   ['simulate', 'Incident simulator'],
   ['exam', 'Exam practice'],
   ['report', 'Mission report'],
@@ -552,6 +573,7 @@ const TABS = [
 function setTab(t, announce) {
   tab = t;
   render();
+  window.scrollTo({top:0, behavior:'instant'});
   document.querySelector('main')?.scrollTo?.({ top: 0 });
   if (announce) toast(announce.title, announce.opts);
 }
@@ -562,73 +584,52 @@ function head(title, desc, extra = '') {
 
 function render() {
   $('#nav').innerHTML = TABS.map(t =>
-    `<button class="${tab === t[0] ? 'active' : ''}" ${tab === t[0] ? 'aria-current="page"' : ''} onclick="setTab('${t[0]}')">${t[1]}</button>`
+    `<button class="${tab === t[0] ? 'active' : ''}" ${tab === t[0] ? 'aria-current="page"' : ''} onclick="setTab('${t[0]}')"><span class="nav-number">${String(TABS.indexOf(t)+1).padStart(2,'0')}</span>${t[1]}</button>`
   ).join('');
-  const views = { plan: planView, research: researchView, simulate: simView, exam: examView, report: reportView, brief: briefView };
+  const views = { home: homeView, plan: planView, research: researchView, simulate: simView, exam: examView, report: reportView, brief: briefView };
   $('#app').innerHTML = (views[tab] || planView)();
   updateStats();
 }
 
-/* ---------------------------------------------------------------- floorplan */
-
-/* Doorways: [zone, centre x, wall y, swing (1 = opens downward), room is above the wall] */
-const DOORW = 30;
-const DOORS = [
-  ['reception', 180, 145,  1, false],   // main entrance, through the porch
-  ['reception', 100, 275,  1, true],
-  ['office',    300, 275,  1, true],
-  ['server',    545, 275,  1, true],
-  ['records',   190, 305, -1, false],
-  ['delivery',  440, 305, -1, false],
-  ['plant',     650, 305, -1, false],
-  ['delivery',  365, 440, -1, true]     // service door
-];
-
-function doorways() {
-  return DOORS.map(([id, cx, wy, d, roomAbove]) => {
-    const room = zone === id ? '#e8f5d1' : '#ffffff', corridor = '#d7e1e5';
-    const above = roomAbove ? room : corridor, below = roomAbove ? corridor : room;
-    const hx = cx - DOORW / 2;
-    return `<g class="door" aria-hidden="true">
-      <rect x="${hx}" y="${wy - 2.5}" width="${DOORW}" height="2.5" fill="${above}"/>
-      <rect x="${hx}" y="${wy}" width="${DOORW}" height="2.5" fill="${below}"/>
-      <path d="M${cx + DOORW / 2} ${wy}A${DOORW} ${DOORW} 0 0 ${d > 0 ? 1 : 0} ${hx} ${wy + DOORW * d}" fill="none" stroke="#a7b8c1" stroke-width="1.5"/>
-      <line x1="${hx}" y1="${wy}" x2="${hx}" y2="${wy + DOORW * d}" stroke="#71838e" stroke-width="2.5"/>
-    </g>`;
-  }).join('');
+function homeView() {
+ const c=counts(), tested=latestRuns().length;
+ const steps=[['research','01','Source your defence','Compare real products, evidence and supplier prices.','18 techniques · 5 purposes'],['plan','02','Build the layers','Place your choices, assign procedures and defend your budget.',state.placements.length+' controls deployed'],['simulate','03','Face the incidents','Predict what happens, test your design and investigate the gaps.',tested+' / 12 current tests'],['exam','04','Make your case','Explain trade-offs and evaluate the risks that remain.','8 written practice questions']];
+ return `<section class="mission-hero"><div><span class="eyebrow">RIVERSIDE OFFICE / SECURITY CHALLENGE</span><h1>Good security starts<br>with good decisions.</h1><p>24 staff. Sensitive data. A public entrance.<br>Build a defence that you can explain — then put it under pressure.</p><div class="hero-actions"><button class="lime" onclick="setTab('${state.placements.length?'plan':'research'}')">${state.placements.length?'Continue your design':'Start your mission'} →</button><button onclick="setTab('brief')">Read the brief</button></div></div><div class="mission-facts"><span>YOUR MISSION BUDGET</span><strong>${money0(state.budget-spent())}</strong><p>remaining of ${money0(state.budget)}</p><div class="hero-rule"></div><b>Protect people. Protect data.</b><p>Use all five control purposes. Keep every escape route clear. Explain what money alone cannot fix.</p></div></section>
+ <div class="next-action"><b>Next objective</b><span>${nextGoal()}</span></div><div class="sectionhead journey-title"><h2>Your route to a stronger defence</h2><span class="tiny">RESEARCH → DESIGN → EVALUATE</span></div><div class="journey">${steps.map(([id,n,title,desc,status])=>`<button onclick="setTab('${id}')"><span class="step-number">${n}</span><h3>${title}</h3><p>${desc}</p><small>${status}<span>↗</span></small></button>`).join('')}</div>
+ <div class="home-bottom"><section class="card"><span class="eyebrow">THE LEARNING GOAL</span><h2>Think in layers, not shopping lists.</h2><p>A camera, a lock and a badge do different jobs. Your task is to explain how controls and people work together — and what happens when one layer fails.</p><div class="chips">${GROUPS.map(g=>`<span class="pill">${g[0]}</span>`).join('')}</div></section><section class="card"><span class="eyebrow">READY FOR THE NEXT LESSON</span><h3>Your work stays on this device.</h3><p>Save a mission file before switching computers. You can reopen it to continue your research, design and incident debriefs.</p><button onclick="exportWork()">Save mission file ↓</button></section></div>`;
 }
 
-function mapView(attack = '') {
-  /* The outer shell is a gapped path so the two external doors break the wall. */
-  const shell = 'M40 130H163M197 130H700M700 130V455M700 455H382M348 455H40M40 455V130';
-  return `<svg class="map" viewBox="0 0 740 500" role="group" aria-label="Office floorplan. Seven zones off a central corridor, with a main entrance into reception and a service door into the delivery entrance. Choose a zone on the plan, or use the buttons below it.">
-    <defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#dce6e8" stroke-width=".5"/></pattern></defs>
-    <rect width="740" height="500" fill="url(#grid)"/>
-    <text x="30" y="24">SITE PLAN / GROUND FLOOR</text><text x="668" y="24">N &#8593;</text>
-    <rect x="40" y="130" width="660" height="325" fill="#d7e1e5"/>
-    <path d="${shell}" fill="none" stroke="#5b6f7d" stroke-width="4"/>
-    ${ZONES.map(z => {
-      const n = state.placements.filter(p => p.zone === z[0]).length;
-      return `<g role="button" tabindex="0" aria-pressed="${zone === z[0]}"
-        aria-label="${z[1]}. ${n} control${n === 1 ? '' : 's'} deployed. ${zinfo(z[0])[6]}"
-        onclick="selectZone('${z[0]}')"
-        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectZone('${z[0]}')}">
-        <title>${z[1]} — ${n} control${n === 1 ? '' : 's'} deployed</title>
-        <rect class="zone ${zone === z[0] ? 'selected' : ''}" x="${z[2]}" y="${z[3]}" width="${z[4]}" height="${z[5]}" rx="3"/>
-        <text class="roomname" x="${z[2] + 12}" y="${z[3] + 25}">${z[1]}</text>
-        <text x="${z[2] + 12}" y="${z[3] + 45}">${z[7]}</text>
-        ${n ? `<text class="zone-count" x="${z[2] + 12}" y="${z[3] + z[5] - 12}">&#9679; ${n} control${n === 1 ? '' : 's'}</text>` : ''}
-      </g>`;
-    }).join('')}
-    ${doorways()}
-    ${ZONES.filter(z => attack === z[0]).map(z =>
-      `<rect class="attack-ring" x="${z[2] + 5}" y="${z[3] + 5}" width="${z[4] - 10}" height="${z[5] - 10}" rx="4"/>`).join('')}
-    <text x="60" y="293">INTERNAL CORRIDOR</text>
-    <text x="205" y="124" class="doorlabel">MAIN ENTRANCE</text>
-    <text x="392" y="472" class="doorlabel">SERVICE DOOR</text>
-    <text x="30" y="484">SCHEMATIC &#8226; NOT TO SCALE</text>
-    <text x="500" y="484">RIVER / FLOOD EXPOSURE &#8595;</text>
-  </svg>`;
+/* ---------------------------------------------------------------- floorplan */
+
+const DOORW = 46;
+// [room, centre x, wall y, swing, room above]. All room doors meet the corridor.
+const DOORS = [
+  ['reception',190,195,1,false], ['reception',190,350,-1,true],
+  ['office',490,350,-1,true], ['server',800,350,-1,true],
+  ['records',190,430,1,false], ['delivery',490,430,1,false],
+  ['plant',800,430,1,false], ['delivery',490,585,-1,true], ['plant',800,585,-1,true]
+];
+const CONNECTIONS = [['outside','perimeter'],['perimeter','reception'],['reception','corridor'],['corridor','office'],['corridor','server'],['corridor','records'],['corridor','delivery'],['corridor','plant'],['outside','delivery'],['outside','plant'],['corridor','outside']];
+function doorways() {
+  return DOORS.map(([id,cx,y,d]) => `<g aria-hidden="true"><path d="M${cx-23} ${y}h46" stroke="#e7eff1" stroke-width="8"/><path d="M${cx+23} ${y} A46 46 0 0 ${d>0?1:0} ${cx-23} ${y+46*d}" fill="none" stroke="#7a929d" stroke-width="1.5"/><path d="M${cx-23} ${y}v${46*d}" stroke="#416574" stroke-width="3"/></g>`).join('');
+}
+function mapView(attack='') {
+  return `<svg class="map" viewBox="0 0 1000 680" role="group" aria-label="Connected office floorplan. Main entrance through reception; all six rooms open onto the central corridor. Service and maintenance doors at the rear, emergency exit to the east.">
+  <defs><pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0H0V25" fill="none" stroke="#cbdbe0" stroke-width=".6"/></pattern></defs>
+  <rect width="1000" height="680" fill="url(#grid)"/>
+  <text x="40" y="25">RIVERSIDE / GROUND FLOOR</text><text x="917" y="25">N ↑</text>
+  <path d="M190 130V195" stroke="#91a9b3" stroke-width="36"/>
+  <rect x="60" y="195" width="880" height="390" fill="#e0ebee" stroke="#526e7b" stroke-width="4"/>
+  ${ZONES.map(z=>{const n=state.placements.filter(p=>p.zone===z[0]).length;return `<g role="button" tabindex="0" aria-pressed="${zone===z[0]}" aria-label="${z[1]}, ${n} controls. ${z[6]}" onclick="selectZone('${z[0]}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectZone('${z[0]}')}"><title>${z[6]}</title><rect class="zone ${zone===z[0]?'selected':''}" x="${z[2]}" y="${z[3]}" width="${z[4]}" height="${z[5]}"/><text class="roomname" x="${z[2]+18}" y="${z[3]+36}">${z[1]}</text><text x="${z[2]+18}" y="${z[3]+62}">${z[7]}</text>${n?`<text class="zone-count" x="${z[2]+18}" y="${z[3]+z[5]-23}">● ${n} DEPLOYED</text>`:''}</g>`}).join('')}
+  ${doorways()}
+  <path d="M940 367V413" stroke="#e0ebee" stroke-width="8"/>
+  <path d="M940 413h40" stroke="#416574" stroke-width="3"/>
+  <text x="330" y="394" class="corridor-label">SHARED CORRIDOR · KEEP CLEAR</text>
+  <text x="715" y="415">EMERGENCY EXIT →</text>
+  <text x="235" y="168">MAIN ENTRANCE ↓</text>
+  <text x="420" y="624">↑ SERVICE ENTRY</text><text x="735" y="624">↑ MAINTENANCE</text>
+  ${ZONES.filter(z=>z[0]===attack).map(z=>`<rect class="attack-ring" x="${z[2]+7}" y="${z[3]+7}" width="${z[4]-14}" height="${z[5]-14}" rx="4"/>`).join('')}
+  <text x="40" y="659">SCHEMATIC · NOT TO SCALE</text><text x="640" y="659">RIVER / FLOOD EXPOSURE ↓</text></svg>`;
 }
 
 function selectZone(id) {
@@ -660,7 +661,7 @@ function planView() {
           <div class="purposes"><small>Control purposes covered</small><div>${purposeStrip}</div></div>
         </div>
         <h3 class="blockhead">Operational procedures <span class="spec" title="${esc(SPEC['C1'])}">C1</span></h3>
-        <p class="tiny">Equipment on its own is not a control. Procedures cost money and staff time, and a procedure with nothing behind it does not count — so choose, do not tick everything. Running all seven costs ${money0(PROCEDURES.reduce((a, p) => a + p.cost, 0))} of your budget; you are spending ${money(procSpent())} on the ${c.procsOn} you have declared.</p>
+        <p class="tiny">Procedures cost money and staff time. Record who owns each one and how it is checked. Equipment-dependent procedures also need the relevant control deployed. Running all seven costs ${money0(PROCEDURES.reduce((a, p) => a + p.cost, 0))} of your budget; you are spending ${money(procSpent())} on the ${c.procsOn} you have declared.</p>
         <div class="procedures">${PROCEDURES.map(p => {
           const on = !!state.procedures[p.id], gap = on && !supported(p.id), note = ownerNote(p.id);
           return `<div class="proc-card ${on ? 'on' : ''} ${gap ? 'unsupported' : ''}">
@@ -670,7 +671,7 @@ function planView() {
             </label>
             ${gap ? `<p class="gap-line">Nothing supports this yet. ${p.needsText} It will not count in an incident until it does.</p>` : ''}
             ${on ? `<label class="sr-only" for="own-${p.id}">Who owns ${p.name}?</label>
-              <textarea id="own-${p.id}" class="owner" placeholder="Who owns this, and how would you know it is actually happening?" onchange="saveProcedureNote('${p.id}', this.value)">${esc(note)}</textarea>
+              <textarea id="own-${p.id}" class="owner" placeholder="Who owns this, and how would you know it is actually happening?" oninput="state.procedureNotes[this.id.slice(4)]=this.value;persist()" onchange="saveProcedureNote('${p.id}', this.value)">${esc(note)}</textarea>
               <span class="tiny">${note.length >= 25 ? '\u2713 Owner recorded' : 'Name the person or role, and the evidence that it happens'}</span>` : ''}
           </div>`;
         }).join('')}</div>
@@ -773,7 +774,7 @@ function deploy(e) {
     return;
   }
 
-  state.placements.push({ id: crypto.randomUUID(), type: id, slot: Number(k), zone, reason: $('#reason').value });
+  state.placements.push({ id: newId(), type: id, slot: Number(k), zone, reason: $('#reason').value });
   persist();
   render();
 
@@ -806,6 +807,7 @@ function removePlacement(id) {
     action: {
       label: 'Undo',
       run: () => {
+        if (state.placements.some(p => p.type === gone.type && p.zone === gone.zone) || spent() + state.products[gone.type][gone.slot].price > state.budget) { toast('Cannot restore this control', {type:'warn',detail:'The zone already has this control or the remaining budget is too low.'}); return; }
         state.placements.push(gone);
         persist(); render();
         toast('Control restored', { type: 'ok', detail: `${type(gone.type).name} is back in ${zname(gone.zone)}.` });
@@ -826,14 +828,20 @@ function researchView() {
     'Source two real products from different suppliers, then write which one you would buy and why.',
     `<span class="pill">${c.compares} / ${c.required || 0} comparisons complete</span>`) +
     `<div class="notice">${ruleNote} <button class="link" onclick="toggleRule()">Switch to ${state.researchRule === 'deployed' ? 'every technique' : 'deployed techniques only'}</button></div>` +
-    GROUPS.map((g, i) => {
-      const items = TYPES.filter(t => t.group === i);
+    `<div class="research-tools"><label>Find a control<input id="research-search" type="search" value="${esc(researchQuery)}" placeholder="Try locks, CCTV or cooling" oninput="filterResearch(this.value)"></label><label>Control purpose<select onchange="researchFilter=this.value;render()"><option value="all">All five purposes</option>${GROUPS.map((g,i)=>`<option value="${i}" ${researchFilter===String(i)?'selected':''}>${g[0]}</option>`).join('')}</select></label></div><div id="research-results">` + researchResults() + '</div>';
+}
+function filterResearch(value) { researchQuery=value; $('#research-results').innerHTML=researchResults(); }
+function researchResults() {
+  const sections = GROUPS.map((g, i) => {
+      const items = TYPES.filter(t => t.group === i && (researchFilter==='all'||researchFilter===String(i)) && (t.name+' '+t.blurb).toLowerCase().includes(researchQuery.toLowerCase()));
+      if (!items.length) return ''; 
       return `<section class="category">
         <div class="category-title"><span class="tag">${i + 1}</span><h2>${g[0]} controls</h2></div>
         <p class="definition">${g[1]}</p>
         <div class="research-grid">${items.map(t => researchCard(t)).join('')}</div>
       </section>`;
     }).join('');
+  return sections || '<div class="empty">No matching controls. Try another term or purpose.</div>';
 }
 
 function researchCard(t) {
@@ -844,14 +852,15 @@ function researchCard(t) {
     <div class="rc-top"><h3>${t.name}</h3>${specTag(t.spec)}</div>
     <p>${t.blurb}</p>
     <p class="tiny">Normally protects: ${t.zones.map(zname).join(', ').toLowerCase()}.</p>
+    ${CAPABILITIES[t.id] && a.some(p=>validProduct(p) && !CAPABILITIES[t.id].some(([v])=>v===p.capability)) ? '<div class="notice warning">Review the capability in your saved product evidence before testing this control.</div>' : ''}
     ${examplesBlock(t.id)}
     <a class="tiny" href="https://www.google.com/search?q=${encodeURIComponent(t.search)}" target="_blank" rel="noopener noreferrer">Find UK suppliers</a>
     <div class="slots">${[0, 1].map(k =>
       `<button class="${validProduct(a[k]) ? 'complete' : ''}" onclick="editProduct('${t.id}',${k})">${validProduct(a[k]) ? '✓ ' + esc(a[k].supplier.slice(0, 16)) : '+ Supplier ' + (k + 1)}</button>`).join('')}</div>
     ${pairReady(t.id)
       ? `<label class="cmp-label" for="cmp-${t.id}">Which would you buy, and why?</label>
-         <textarea id="cmp-${t.id}" class="cmp" placeholder="Compare price, specification, fitness for the zone and anything the cheaper option leaves out. At least 40 characters." onchange="saveCompare('${t.id}', this.value)">${esc(state.compare[t.id] || '')}</textarea>
-         <span class="tiny">${done ? '✓ Comparison written' : 'Comparison still needed for the marks'}</span>`
+         <textarea id="cmp-${t.id}" class="cmp" placeholder="Compare price, specification, fitness for the zone and anything the cheaper option leaves out. At least 40 characters." oninput="state.compare[this.id.slice(4)]=this.value;persist()" onchange="saveCompare('${t.id}', this.value)">${esc(state.compare[t.id] || '')}</textarea>
+         <span class="tiny">${done ? '✓ Comparison written' : 'Write a comparison for teacher review'}</span>`
       : `<span class="tiny">${req ? 'Two different suppliers needed.' : 'Not required unless you deploy this control.'}</span>`}
   </article>`;
 }
@@ -871,7 +880,7 @@ function saveCompare(id, value) {
   state.compare[id] = value;
   persist();
   if (compareReady(id)) {
-    toast(`Comparison saved: ${type(id).name}`, { type: 'ok', detail: 'That is the supplier-choice justification the mark scheme asks for.', key: 'cmp-' + id });
+    toast(`Comparison saved: ${type(id).name}`, { type: 'ok', detail: 'Your supplier-choice justification is ready for teacher review.', key: 'cmp-' + id });
   } else if (value.trim().length) {
     toast('Comparison too short to count', { type: 'warn', detail: 'Say which product you would buy and give a reason — 40 characters or more.', key: 'cmp-' + id });
   }
@@ -896,6 +905,7 @@ function editProduct(id, slot) {
         <label>Price or quoted estimate (£)<input name="price" type="number" min="0" step="0.01" required value="${p.price ?? ''}">
           ${EXAMPLES[id] ? `<span class="tiny">Typical: ${exRange(id)}</span>` : ''}</label>
         <label>Price basis and date<input name="priceNote" placeholder="per unit, VAT included, checked 21 Sept" required value="${esc(p.priceNote)}"></label>
+        ${capabilityField(id, p)}
         <label class="full">What it does, and what it does not do<textarea name="description" required minlength="20" placeholder="Features, what it protects against, and one limitation.">${esc(p.description)}</textarea></label>
         <label class="full">Product image URL<input name="image" type="url" placeholder="https://… or attach a screenshot below" value="${weburl(editImage) ? esc(editImage) : ''}"></label>
         <label class="full">Or attach a screenshot (PNG, JPG or WebP, under 500 KB)<input id="productimage" type="file" accept="image/png,image/jpeg,image/webp"></label>
@@ -904,7 +914,7 @@ function editProduct(id, slot) {
       <p class="tiny">For quote-only systems, label the figure as an estimate and say what it includes. Never invent a supplier quote.</p>
       <div id="formerror" class="error" role="alert"></div>
       <div class="dialog-actions">
-        <span class="tiny">15 XP for a complete record</span>
+        <span class="tiny">15 XP when this technique counts towards your mission</span>
         <button class="primary" type="submit">Save product evidence</button>
       </div>
     </form>`;
@@ -960,118 +970,77 @@ function editProduct(id, slot) {
 
 /* ---------------------------------------------------------------- simulator */
 
+function chooseIncident(id) { selectedIncident=id; activeRun=[...state.runs].reverse().find(r=>r.id===id)||null; render(); }
+function saveIncidentNote(kind, value) { state[kind][selectedIncident]=value; persist(); }
 function simView() {
-  const results = latestRuns();
-  const done = results.filter(r => r.score === 100).length;
-  return head('Put your plan under pressure.',
-    'Run an incident, read the debrief and go back and fix what it found. Re-running an unchanged design does not earn more XP.',
-    `<span class="pill">${done} / ${SCENARIOS.length} fully addressed</span>`) +
-    `<div class="notice">These are transparent classroom scenarios, not real-world predictions. A full score means the checks listed for that scenario are met. Whether the product you chose is actually suitable, covers the right area and is installed properly is for you and your teacher to judge.</div>
-    ${staleRuns() ? `<div class="notice warning">Some results below are from an earlier version of your design. Run those incidents again.</div>` : ''}
-    <div class="scenario-grid">${SCENARIOS.map((s, i) => {
-      const r = results.find(x => x.id === s[0]);
-      const stale = !r && state.runs.some(x => x.id === s[0]);
-      return `<article class="card scenario">
-        <span class="number">${String(i + 1).padStart(2, '0')}</span>
-        <span class="pill">${r ? r.score + '%' : stale ? 'Retest' : 'Untested'}</span>
-        <h3>${s[1]}</h3>
-        <p>${s[2]}</p>
-        <div class="scen-foot">${specTag([s[4]])}<span class="tiny">${zname(s[3])}</span></div>
-        <button class="${r?.score === 100 ? '' : 'primary'}" onclick="runIncident('${s[0]}')" ${running ? 'disabled' : ''}>${running ? 'Testing…' : 'Run incident'}</button>
-      </article>`;
-    }).join('')}</div>
-    ${activeRun ? resultView(activeRun) : ''}`;
+  const results=latestRuns(), s=SCENARIOS.find(x=>x[0]===selectedIncident);
+  const current=activeRun?.id===selectedIncident?activeRun:[...state.runs].reverse().find(r=>r.id===selectedIncident);
+  return head('The incident room.', 'Predict. Test. Investigate. Improve. Turn each gap into a better design.', `<span class="pill">${results.filter(r=>r.score===100).length} / 12 challenges addressed</span>`)+
+  `<div class="sim-layout"><section class="challenge-list" aria-label="Incident challenges">${SCENARIOS.map((x,i)=>{const r=results.find(r=>r.id===x[0]);return `<button class="challenge ${selectedIncident===x[0]?'selected':''}" aria-pressed="${selectedIncident===x[0]}" onclick="chooseIncident('${x[0]}')"><span class="challenge-number">${String(i+1).padStart(2,'0')}</span><span><b>${x[1]}</b><small>${zname(x[3])}</small></span><em>${r?r.score+'%':state.runs.some(r=>r.id===x[0])?'Retest':'—'}</em></button>`}).join('')}</section>
+  <div class="challenge-stage"><section class="card incident-brief"><span class="eyebrow">CHALLENGE ${String(SCENARIOS.indexOf(s)+1).padStart(2,'0')} / 12</span><h2>${s[1]}</h2><p>${s[2]}</p><div class="chips"><span class="pill">${zname(s[3])}</span>${specTag([s[4]])}</div>
+  <label for="prediction">Your prediction <span class="tiny">optional · discuss with your partner</span></label><textarea id="prediction" placeholder="Which layer will help? What could still go wrong?" oninput="saveIncidentNote('predictions',this.value)">${esc(state.predictions[selectedIncident]||'')}</textarea>
+  <div class="run-actions"><button class="primary" onclick="runIncident('${s[0]}')" ${running?'disabled':''}>${running?'Checking your defence…':current?'Retest this incident →':'Run this incident →'}</button><span class="tiny">${state.placements.length?'Tests a snapshot of your current design':'No controls yet? Run a baseline to reveal the risks.'}</span></div></section>
+  ${current?resultView(current):`<section class="card preflight"><span class="eyebrow">BEFORE YOU TEST</span><h3>Which layer will hold?</h3>${mapView(s[3])}<p>The highlighted zone is under pressure. Results check your control choices, placement, product capabilities and owned procedures.</p></section>`}
+  <p class="model-note">Classroom model, not an attack prediction or a security certification. A percentage counts the listed checks; it is not the chance of stopping an incident. Discuss product suitability, installation and residual risk with your teacher.</p></div></div>`;
 }
-
 function resultView(r) {
-  const s = SCENARIOS.find(x => x[0] === r.id);
-  const gaps = r.checks.filter(c => !c.ok);
-  return `<section class="card results" id="result">
-    <div class="sectionhead">
-      <div><span class="eyebrow">INCIDENT DEBRIEF</span><h2>${s[1]}</h2><p class="tiny">Specification link: ${esc(SPEC[s[4]] || s[4])}</p></div>
-      <div class="bigscore ${r.score === 100 ? 'full' : ''}">${r.score}<span>%</span></div>
-    </div>
-    ${mapView(s[3])}
-    <div>${r.checks.map(c => `<div class="resultrow ${c.ok ? '' : 'fail'}">
-      <span class="outcome">${c.ok ? '✓' : '!'}</span>
-      <div><b>${c.ok ? 'Addressed' : 'Gap in the design'}</b><p>${c.text}</p>${c.why ? `<p class="tiny">${c.why}</p>` : ''}</div></div>`).join('')}</div>
-    <p class="tiny" style="margin-top:14px">${r.signature === signature() ? 'This result matches your current design.' : 'Your design has changed since this test. Run it again.'} The model checks control types, zones and declared procedures — not lock ratings, camera coverage, gas suitability or installation quality.</p>
-    <button style="margin-top:16px" onclick="selectZone('${s[3]}');setTab('plan')">Improve ${zname(s[3]).toLowerCase()}</button>
-    ${gaps.length ? `<button style="margin-top:16px" onclick="setTab('research')">Research what is missing</button>` : ''}
-  </section>`;
+  const s=SCENARIOS.find(x=>x[0]===r.id), addressed=r.checks.filter(c=>c.ok).length;
+  const idx=state.runs.indexOf(r), previous=state.runs.slice(0,idx<0?state.runs.length:idx).reverse().find(x=>x.id===r.id);
+  return `<section class="card results" id="result" tabindex="-1"><div class="sectionhead"><div><span class="eyebrow">INCIDENT DEBRIEF</span><h2>${addressed===r.checks.length?'All model checks addressed':'Your next design decisions'}</h2><p>${addressed} of ${r.checks.length} checks addressed${previous?` · Previous test: ${previous.score}%` : ' · First baseline'}</p></div><div class="bigscore ${r.score===100?'full':''}">${r.score}<span>%</span></div></div>
+  ${r.signature!==signature()?'<div class="notice warning">Historical result: your design has changed. Retest to check this version.</div>':''}
+  ${r.checks.map(c=>`<div class="resultrow ${c.ok?'':'fail'}"><span class="outcome">${c.ok?'✓':'!'}</span><div><b>${c.ok?'Addressed':'Needs attention'}</b><p>${esc(c.text)}</p>${c.why?`<p class="tiny">${esc(c.why)}</p>`:''}</div></div>`).join('')}
+  <label for="debrief">Explain your next move</label><textarea id="debrief" placeholder="I would change… because… The trade-off is… The remaining risk is…" oninput="saveIncidentNote('debriefs',this.value)">${esc(state.debriefs[r.id]||'')}</textarea>
+  <div class="run-actions"><button onclick="selectZone('${s[3]}');setTab('plan')">Improve this zone →</button><button onclick="setTab('research')">Research a control</button></div></section>`;
 }
-
 async function runIncident(id) {
-  if (running) return;
-  if (!state.placements.length) {
-    toast('Nothing to test yet', { type: 'warn', detail: 'Deploy at least one researched control before running an incident.', action: { label: 'Open the planner', run: () => setTab('plan') } });
-    return;
-  }
-  running = true; tab = 'simulate'; activeRun = null; render();
-  const s = SCENARIOS.find(x => x[0] === id);
-  toast(`Running: ${s[1]}`, { type: 'info', detail: `Checking your layers of defence around ${zname(s[3]).toLowerCase()}…`, duration: 2500 });
-  await new Promise(r => setTimeout(r, 850));
-
-  const before = latestRuns().filter(r => r.score === 100).length;
-  const result = evaluate(id);
-  const run = { ...result, id, date: new Date().toISOString(), signature: signature() };
-  state.runs.push(run);
-  state.runs = state.runs.slice(-120);
-  activeRun = run;
-  running = false;
-  persist();
-  render();
-  $('#result')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  const gaps = run.checks.filter(c => !c.ok);
-  if (run.score === 100) {
-    const after = latestRuns().filter(r => r.score === 100).length;
-    toast(`${s[1]}: fully addressed`, {
-      type: 'xp',
-      detail: after > before ? `+60 XP. ${after} of ${SCENARIOS.length} incidents now covered by your current design.` : 'Already credited for this design.'
-    });
-  } else {
-    toast(`${s[1]}: ${run.score}%`, {
-      type: 'warn',
-      detail: `${gaps.length} gap${gaps.length === 1 ? '' : 's'}. First one: ${gaps[0].text}`,
-      duration: 9000,
-      action: { label: `Fix ${zname(s[3]).toLowerCase()}`, run: () => { selectZone(s[3]); setTab('plan'); } }
-    });
-  }
+  if(running || !SCENARIOS.some(s=>s[0]===id)) return;
+  const mission=state, snapshot=JSON.parse(JSON.stringify(state)), fingerprint=signature();
+  const result=evaluate(id,snapshot);
+  selectedIncident=id; running=true; activeRun=null; tab='simulate'; render();
+  try {
+    await new Promise(resolve=>setTimeout(resolve,650));
+    if (state!==mission) return;
+    const run={...result,id,date:new Date().toISOString(),signature:fingerprint};
+    state.runs.push(run); state.runs=state.runs.slice(-120); activeRun=run;
+    persist();
+    toast(run.score===100?'All classroom checks addressed':'Debrief ready', {type:run.score===100?'xp':'info',detail:`${run.checks.filter(c=>c.ok).length} of ${run.checks.length} checks addressed. Read the evidence and choose your next improvement.`});
+  } catch(error) { toast('Test could not finish',{type:'error',detail:'Your design is still saved. Try this incident again.'}); }
+  finally { running=false; render(); if(tab==='simulate' && selectedIncident===id) $('#result')?.focus({preventScroll:true}); }
 }
 
-function evaluate(id) {
-  /* a procedure only counts when the design actually supports it */
-  const p = Object.fromEntries(PROCEDURES.map(x => [x.id, declared(x.id)]));
+function evaluate(id, design = state) {
+  const has = (t,z) => design.placements.some(x=>x.type===t && x.zone===z);
+  const capable = (t,z,kind) => design.placements.some(x=>x.type===t && x.zone===z && design.products[x.type]?.[x.slot]?.capability===kind);
+  const p = Object.fromEntries(PROCEDURES.map(x => [x.id, !!design.procedures[x.id] && (design.procedureNotes[x.id]||'').trim().length>=25 && (!x.needs.length || x.needs.some(t=>design.placements.some(a=>a.type===t)))]));
   const c = (ok, text, why) => ({ ok: !!ok, text, why });
   let checks;
   switch (id) {
     case 'tailgate': checks = [
       c(has('badges', 'reception'), 'Staff and visitors have identification to display at reception.', 'Directive control: it only works if people can tell staff from strangers at a glance.'),
       c(has('signs', 'reception'), 'Reception signage states the sign-in and escort rules.'),
-      c(has('access', 'reception'), 'The door from reception into the office needs a card or code.', 'Without it the public area and the staff area are the same space.'),
-      c(p.visitor, 'Staff sign visitors in, badge them and escort them.', 'Badges alone do not stop tailgating. Someone has to be willing to challenge.')]; break;
+      c(has('access', 'reception'), 'The door from reception into the staff corridor needs a card or code.', 'Without it the public area and the staff area are the same space.'),
+      c(p.visitor, 'Staff sign visitors in, badge them and escort them, with an owner and evidence recorded.', 'Badges alone do not stop tailgating. Someone has to be willing to challenge.')]; break;
     case 'vehicle': checks = [
-      c(has('barriers', 'perimeter'), 'Barriers or bollards keep vehicles off the site.'),
+      c(capable('barriers', 'perimeter', 'vehicle'), 'Vehicle-rated barriers protect the exposed boundary.', 'A fence is not automatically a vehicle barrier. Confirm the rating in product evidence.'),
       c(has('gates', 'perimeter'), 'A controlled gate protects the entry point.'),
       c(has('signs', 'perimeter'), 'Boundary signage makes the restriction clear.'),
-      c(has('cctv', 'perimeter') && p.response, 'Perimeter CCTV is paired with a named responder.', 'A camera nobody watches is evidence, not detection.')]; break;
+      c(has('cctv', 'perimeter') && p.response, 'Perimeter CCTV is paired with a named responder.', 'Recording supports investigation; timely detection needs monitored alerts or staff watching and responding.')]; break;
     case 'server': checks = [
-      c(has('locks', 'server') || has('access', 'server'), 'The server-room door is locked or card-controlled.'),
+      c(has('locks', 'server') || has('access', 'server') || has('biometric', 'server'), 'The server-room door has mechanical or electronic access control.'),
       c(has('cages', 'server'), 'A cabinet or cage adds a second layer around the equipment.'),
-      c(has('biometric', 'server') || has('access', 'server'), 'Entry to the room is identified to a person, not just to a key.', 'A key says the door opened. A card or biometric says who opened it.'),
+      c(has('biometric', 'server') || has('access', 'server'), 'Individual credentials or biometrics support access accountability.', 'A card log identifies a credential, not proof of who used it. Account management and review still matter.'),
       c((has('motion', 'server') || has('cctv', 'server')) && p.response, 'Detection in the room is backed by a response procedure.')]; break;
     case 'records': checks = [
-      c(has('locks', 'records') || has('access', 'records'), 'The records store is locked or card-controlled.'),
-      c(has('motion', 'records'), 'Movement in the records store is detected out of hours.'),
+      c(has('locks', 'records') || has('access', 'records') || has('biometric', 'records'), 'The records store is locked or card-controlled.'),
+      c(has('motion', 'records') || has('cctv', 'records'), 'Local sensors or monitored CCTV cover the records store.'),
       c(has('mediasafe', 'records'), 'Confidential files and backup media are in a secure cabinet or safe.'),
-      c(p.response, 'A named responder investigates the alert.')]; break;
+      c(p.response && (has('motion','records') || has('cctv','records')), 'Local detection is paired with an owned response procedure.')]; break;
     case 'delivery': checks = [
       c(has('locks', 'delivery') || has('access', 'delivery'), 'The service entrance is locked or card-controlled.'),
       c(has('signs', 'delivery') && p.visitor, 'Contractor instructions are backed by staff signing people in.'),
       c(has('cctv', 'delivery') && p.response, 'Delivery-entrance CCTV has an active response procedure.')]; break;
     case 'laptop': checks = [
-      c(has('devicelock', 'office'), 'Laptops and equipment in the open office are physically secured or marked.'),
+      c(capable('devicelock', 'office', 'anchor'), 'Laptops are physically anchored in the office.', 'Asset marking and port blockers do not stop a device being carried away. Confirm a physical anchoring lock.'),
       c(has('cctv', 'office'), 'The open-plan area is covered by CCTV for evidence.'),
       c(has('badges', 'reception') && p.visitor, 'Anyone in the office without a badge can be identified and challenged.')]; break;
     case 'leaver': checks = [
@@ -1087,17 +1056,16 @@ function evaluate(id) {
     case 'fire': checks = [
       c(has('fire', 'office'), 'Fire-suppression equipment suited to the hazard is in the office.'),
       c(p.fireplan, 'A trained response and evacuation procedure supports the equipment.', 'Evacuation comes first. Equipment is for trained staff and small fires only.'),
-      c(p.backups, 'Offsite backups mean the business survives the loss of the room.')]; break;
+      c(p.backups, 'Offsite, restore-tested backups support data recovery after losing the room.')]; break;
     case 'gas': checks = [
       c(has('gas', 'server'), 'A suitable suppression system protects the enclosed server room.'),
       c(p.fireplan, 'Safe evacuation and a trained response are planned.', 'Gas systems need a clear room. The procedure is part of the control.'),
       c(p.backups, 'Backups are offsite in case the room is lost.')]; break;
     case 'heat': checks = [
-      c(has('cooling', 'server'), 'Primary cooling addresses the normal overheating risk.'),
       c(has('backupcool', 'server'), 'Standby cooling is available when the primary fails.', 'This is the compensating control: it substitutes for cooling that is unavailable.'),
       c(p.coolplan, 'Temperature is monitored and staff know how to switch over.')]; break;
     case 'power': checks = [
-      c(has('power', 'server'), 'A UPS keeps critical equipment running or shuts it down cleanly.'),
+      c(capable('power', 'server', 'ups'), 'Battery-backed UPS supports a controlled shutdown or brief continuity.', 'A surge protector does not supply power during an outage. Capacity and runtime still need checking.'),
       c(p.backups, 'Recent backups exist offsite in case data is corrupted by the outage.'),
       c(p.coolplan, 'Staff know cooling stops with the power and monitor temperature.')]; break;
     default: throw Error('Unknown incident');
@@ -1128,7 +1096,7 @@ function examView() {
         </div>
         <h3>${i + 1}. ${q.prompt}</h3>
         <label class="sr-only" for="ans-${q.id}">Your answer to question ${i + 1}</label>
-        <textarea id="ans-${q.id}" class="answer" placeholder="Write your answer here." onchange="saveAnswer('${q.id}', this.value)">${esc(a.text || '')}</textarea>
+        <textarea id="ans-${q.id}" class="answer" placeholder="Write your answer here." oninput="state.answers['${q.id}']={...(state.answers['${q.id}']||{}),text:this.value};persist()" onchange="saveAnswer('${q.id}', this.value)">${esc(a.text || '')}</textarea>
         <div class="q-foot">
           <span class="tiny">${len ? len + ' characters' : 'Not started'}${len && len < 30 ? ' — too short to count' : ''}</span>
           <span>
@@ -1138,7 +1106,7 @@ function examView() {
             </label>
           </span>
         </div>
-        ${a.revealed ? `<div class="markscheme"><b>What a marker is looking for</b><ul>${q.indicative.map(x => `<li>${x}</li>`).join('')}</ul></div>` : ''}
+        ${a.revealed ? `<div class="markscheme"><b>Indicative points for discussion</b><ul>${q.indicative.map(x => `<li>${x}</li>`).join('')}</ul></div>` : ''}
       </section>`;
     }).join('')}`;
 }
@@ -1214,7 +1182,7 @@ function reportView() {
         <li>${state.reflection.trim().length >= 120 ? '✓' : '○'} Final evaluation written.</li>
       </ul>
       <label for="reflection">Final evaluation</label>
-      <textarea id="reflection" oninput="state.reflection=this.value" onchange="saveReflection()" placeholder="Which supplier gave better value, and why? Which risk is still open? What does your compensating control stand in for? What would you buy next with another £2,000?">${esc(state.reflection)}</textarea>
+      <textarea id="reflection" oninput="state.reflection=this.value;persist()" onchange="saveReflection()" placeholder="Which supplier gave better value, and why? Which risk is still open? What does your compensating control stand in for? What would you buy next with another £2,000?">${esc(state.reflection)}</textarea>
     </div>
 
     <div class="card" style="margin-top:20px">
@@ -1243,6 +1211,7 @@ function reportView() {
       }).join('') || '<p>No results for the current design. Run the incidents after your final changes.</p>'}
     </div>
 
+    <section class="card" style="margin-top:20px"><h2>Incident learning journal</h2>${SCENARIOS.filter(x=>state.predictions[x[0]]||state.debriefs[x[0]]).map(x=>`<h3 class="blockhead">${x[1]}</h3><p><b>Prediction:</b> ${esc(state.predictions[x[0]]||'Not recorded')}</p><p><b>Next decision:</b> ${esc(state.debriefs[x[0]]||'Not recorded')}</p>`).join('')||'<p>No incident notes recorded yet.</p>'}</section>
     <div class="card" style="margin-top:20px">
       <h2>Exam practice</h2>
       ${QUESTIONS.map((q, i) => {
@@ -1286,7 +1255,7 @@ function printReport() {
 function briefView() {
   return head('The mission briefing.',
     'A 24-person office with public access, valuable equipment, confidential records and a river at the back.') +
-    `<div class="grid2">
+    `<div class="notice"><b>90-minute lesson:</b> Brief & baseline 10 min · Research 25 min · Design 20 min · Test & improve 20 min · Explain & exit ticket 15 min. Pairs can divide supplier research; compare their findings before deploying.</div><div class="grid2">
       <section class="card">
         <span class="eyebrow">WHAT YOU DO</span>
         <h2>Research. Deploy. Test. Evaluate.</h2>
@@ -1299,7 +1268,7 @@ function briefView() {
           <li>Answer the exam-practice questions and write your evaluation.</li>
         </ol>
         <label>Mission budget (£)<input type="number" min="0" max="1000000" step="100" value="${state.budget}" onchange="setBudget(this.value)"></label>
-        <p>£14,000 is a classroom constraint, not a recommended real-world figure. A design that fully addresses all ${SCENARIOS.length} incidents needs about ${CLEARANCE_PLACEMENTS} controls plus procedures: near the bottom of the typical price ranges that is roughly £7,000, at mid-range prices roughly £11,000. Lower it to force harder trade-offs; raise it if students are pricing installed or quoted systems rather than single units.</p>
+        <p>£14,000 is a classroom constraint, not a recommended real-world figure. Several designs can address the model checks. Whole-system quotes, capacity and installation can change the cost substantially. Lower it to force harder trade-offs; raise it if students are pricing installed or quoted systems rather than single units.</p>
         <p>Procedures are charged against the same budget at an indicative annual cost — training, staff time, keyholding, offsite storage and destruction contracts are all real line items. All seven come to ${money0(PROCEDURES.reduce((a, p) => a + p.cost, 0))}. The figures are classroom estimates, not quotes.</p>
         <label for="rulepick">Research requirement</label>
         <select id="rulepick" onchange="setRule(this.value)">
@@ -1320,10 +1289,10 @@ function briefView() {
           <li>10 XP for each procedure that is supported by the design and has a named owner.</li>
         </ul>
         <p>Changing the design makes old incident results historical — retest to earn the XP again. Repeating an identical run does not stack points.</p>
-        <p>Every change autosaves in this browser straight away, so closing the tab by accident loses nothing — the header shows the time of the last save. The browser is the only place it lives, though: use <b>Save file</b> before changing computer, and if the machine is shared, before someone resets it.</p>
+        <p>Completed changes autosave on this device when browser storage is available — the header shows the time of the last save. The browser is the only place it lives, though: use <b>Save file</b> before changing computer, and if the machine is shared, before someone resets it.</p>
         <h3 class="blockhead">Where this sits in Unit 2</h3>
         <ul class="coverage">${Object.entries(SPEC).map(([c, l]) => `<li class="on"><span>·</span> ${l}</li>`).join('')}</ul>
-        <p class="tiny">Pearson Level 3 AAQ BTEC National in Information Technology, Unit 2: Cyber Security and Incident Management. Externally assessed by written examination.</p>
+        <p class="tiny">Pearson Level 3 AAQ BTEC National in Information Technology, Unit 2: Cyber Security and Incident Management. Externally assessed by written examination. These are teacher-authored activities and indicative answers, not official Pearson questions or grades.</p><p><a href="https://qualifications.pearson.com/content/dam/pdf/btec-aaqs/information-technology/2025/specification-and-sample-assessments/btec-level-3-national-ext-cert-in-it-aaq-spec.pdf#page=58" target="_blank" rel="noopener noreferrer">View Pearson specification: A4.1.1 physical security ↗</a></p><p class="tiny">Extend your evaluation to security staff, staff training and protected cabling. Card systems may use NFC, RFID, barcodes, QR codes, magnetic stripes or chips; biometric systems can use different human characteristics. These options need context-specific comparison.</p>
       </section>
     </div>
 
@@ -1332,7 +1301,7 @@ function briefView() {
       ${GROUPS.map((g, i) => `<h3 class="blockhead">${g[0]}</h3><p>${g[1]} In this pack: ${TYPES.filter(t => t.group === i).map(t => t.name.toLowerCase()).join(', ')}.</p>`).join('')}
       <div class="notice" style="margin-top:20px">A control can serve more than one purpose depending on how it is used. Cooling normally prevents overheating; standby cooling is compensating only when it stands in for a primary control that has failed. A policy that ID must be displayed is directive; buying lanyards is not.</div>
       <h3 class="blockhead">Why procedures are not free</h3>
-      <p>A policy costs money and depends on equipment. Declaring alarm response with no CCTV or sensors buys you a rota with nothing to respond to, so the simulation will not credit it. Every procedure you declare needs a named owner and a way of knowing it actually happens — that is the difference between a policy and a document.</p>
+      <p>Some procedures depend on equipment; evacuation, secure disposal and backup routines have their own operational requirements. Declaring alarm response with no CCTV or sensors buys you a rota with nothing to respond to, so the simulation will not credit it. Every procedure you declare needs a named owner and a way of knowing it actually happens — that is the difference between a policy and a document.</p>
       <h3 class="blockhead">What the simulation does not check</h3>
       <p>It checks control types, zones and declared procedures. It does not check lock ratings, camera fields of view, flood heights, gas-system suitability, installation quality, price accuracy or whether staff would really follow the procedure. Keep escape routes usable in every design — physical security never overrides fire safety.</p>
       <h3 class="blockhead">Teacher controls</h3>
@@ -1395,7 +1364,8 @@ function boot() {
     } finally { $('#import').value = ''; }
   };
 
-  setSaved(localStorage.getItem(STORE_KEY) ? 'Autosaved in this browser' : 'Autosaves as you work');
+  try { setSaved(localStorage.getItem(STORE_KEY) ? 'Saved on this device' : 'Autosaves on this device'); } catch { setSaved('Use Save file to keep your work'); }
+  if (loadWarning) toast('Check your saved work', {type:'error', detail:loadWarning, duration:0});
   render();
   lastRank = rankName();
 

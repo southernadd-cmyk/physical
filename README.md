@@ -1,4 +1,4 @@
-# Secure the Office
+# Secure the Office — version 3
 
 A browser-based physical-security lesson tool. No installation, student account, backend or API key.
 
@@ -79,14 +79,11 @@ Two modes, switchable in *Mission and lesson guide* or from the research lab:
 Ticking all seven costs £2,740 of the £14,000 budget, so procedures compete with equipment for the same
 money — which is the trade-off exam question 8 asks students to evaluate.
 
-Each procedure also depends on equipment. Alarm response needs CCTV or intruder detection somewhere in the
-design; fire response needs suppression; key control needs locks or an entry system; temperature changeover
-needs cooling. A procedure with nothing behind it is charged for, flagged on the card and in the report, and
-does **not** count when an incident is evaluated. Backup rotation and secure disposal have no equipment
-dependency.
+Some procedures depend on equipment: alarm response needs CCTV or intruder detection; key control needs locks or an entry system; temperature changeover needs cooling. Evacuation planning does not depend on buying suppression equipment. A procedure with nothing behind it is charged for, flagged on the card and in the report, and
+does **not** count when an incident is evaluated. Evacuation, backup rotation and secure disposal have no catalogue equipment dependency.
 
 Every declared procedure needs a written owner — who does it, and how you would know it is actually
-happening. That statement is required for clearance and appears on the printed report.
+happening. That statement (at least 25 characters) is required for scenario credit and clearance, and appears on the report. The teacher must review its quality; length alone is not evidence of effectiveness.
 
 ## Incidents
 
@@ -112,13 +109,12 @@ Self-awarded marks are for tracking only and appear on the printed report for th
 with a written choice; 15 per deployment; 60 per incident fully addressed by the current design; 10 per
 exam question answered; 10 per supported procedure with a named owner.
 
-Product records for techniques that are never deployed earn nothing, and the meter is measured against
-a design capable of clearing all twelve incidents (17 techniques, 27 placements), so filling in forms
+In deployed-only mode, product records for techniques that are never deployed earn nothing, and the meter is measured against
+progress targets of 17 techniques and 27 placements (not a prescribed shopping list), so filling in forms
 without building anything does not move the rank.
 
 Repeated runs of an unchanged design do not stack XP. A result is invalidated only by a change to the
-**design**: adding, moving or removing a control, changing the price of a control that is deployed,
-declaring or dropping a procedure, or changing the budget. Recording a second supplier, editing a
+**effective design**: placing or removing a control, changing its declared capability, or changing whether a procedure is supported and owned. Price and budget changes affect affordability, not incident effectiveness. Recording a second supplier, editing a
 description, reopening a save file and reloading the page do not invalidate anything.
 
 **Security architect** clearance requires a written supplier comparison for every technique used, at
@@ -136,23 +132,13 @@ whole region is a single polite live region for screen readers.
 ## Budget
 
 The default £14,000 is a classroom constraint, not a recommended real-world budget; it is adjustable
-in *Mission and lesson guide*. For scale: a design that fully addresses all twelve incidents needs
-about 27 placements plus the six supporting procedures — roughly £7,000 at the bottom of the typical
-price ranges and about £11,000 at mid-range prices, so there is room to make choices but not room to
-buy everything. Lower it to force harder trade-offs; raise it if students are pricing installed or
-quoted systems rather than single units. Price one placement as one unit or a quoted system for the selected
+in *Mission and lesson guide*. Several designs can address the checks. Use local supplier evidence and include installation assumptions; lower the budget to force trade-offs or raise it for whole-system quotes. Price one placement as one unit or a quoted system for the selected
 zone. Ask students to identify estimates, VAT and installation assumptions. Keep evacuation routes
 usable — physical security never overrides fire safety.
 
 ## Saving
 
-Every change is autosaved to browser storage immediately and the header shows the time of the last
-save, so closing the tab by accident loses nothing. The browser is the only place it lives, though:
-**Save file** downloads a JSON checkpoint and **Open file** resumes it on another PC. Save files from the previous version are migrated
-automatically: products, placements, procedures and the evaluation carry over, and the old
-compensating-cooling task is renamed. Incident results are cleared on migration because the
-scenario checks changed. Browser storage has a quota — download a save file when prompted, and
-always save before changing computer.
+Completed changes, written answers and incident notes autosave when browser storage is available. Unsubmitted product forms are not saved. Use **Save file** before switching devices; **Open file** restores a JSON checkpoint. Version 2 research, comparisons, placements, procedures and answers are retained. Old incident results become historical because the versioned check model changed. Version 1 saves are migrated where their product evidence is valid. Ambiguous legacy power protection, device locks and barriers need their capability confirmed in the product editor. Download a checkpoint if browser storage is unavailable or full.
 
 Product images may use remote URLs or embedded PNG/JPG/WebP screenshots up to 500 KB. External
 images can be blocked by suppliers; attaching a screenshot is more reliable.
@@ -171,3 +157,22 @@ In *Mission and lesson guide*: mission budget, research requirement, save/open a
 No build step. Fonts are optional Google Fonts with a system fallback. No student data is sent to an
 application server. Opening supplier links and loading remote product images contacts those external
 services.
+
+## Version 3 changes
+
+- Mission hub and a four-stage student journey, with a next objective and clearer navigation.
+- Searchable research by name or purpose; all 18 techniques and both research modes retained.
+- Connected shared corridor, main/service/maintenance entrances, visible room doors and emergency exit.
+- Focused incident selection, optional predictions, persistent improvement notes and previous-test comparison.
+- Empty-design baseline testing. Each run evaluates an immutable design snapshot; changing another tab during the animation cannot change that run.
+- Explicit product capabilities distinguish UPS from surge protection, physical anchoring from marking, and rated vehicle barriers from fencing.
+- Primary cooling does not earn points during its own failure. Biometric entry and local CCTV alternatives receive appropriate credit. Response needs local detection.
+- Procedure ownership is checked consistently in the model and clearance. Evacuation works independently of suppression purchasing.
+- Budget-checked undo, insecure-context-compatible IDs, keyboard-accessible floorplan and reduced-motion styling.
+- Incident learning journal included in the printable report. Practice marks and XP are classroom feedback, not qualification grades.
+
+## Maintainer checks
+
+The app is still plain HTML/CSS/JavaScript with no production dependencies. Open the root `index.html` from the GitHub copy, or `dist/index.html` from the Sites checkout. Optional Vite preview: `npm install`, then `npm run dev`. Logic regression tests: `npm test` (Node 18+); no browser installation required.
+
+The tests cover all 12 baseline incidents, control capability distinctions, local detection, procedure ownership, versioned results, immutable snapshots, save migration, view rendering and room connectivity. Product evidence and real installation suitability remain teacher-reviewed.
